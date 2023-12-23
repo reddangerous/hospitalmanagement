@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from . import models
-from .models import Drug
+from .models import Drug, Supplier
 
 
 #for admin signup
@@ -12,13 +12,36 @@ class AdminSigupForm(forms.ModelForm):
         widgets = {
         'password': forms.PasswordInput()
         }
+class SupplierSelect(forms.Select):
+    def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
+        option = super().create_option(name, value, label, selected, index, subindex=subindex, attrs=attrs)
+        option['data-custom'] = self.choices.queryset.filter(pk=value).exists()
+        return option
+
 class DrugForm(forms.ModelForm):
+    new_supplier_name = forms.CharField(max_length=255, required=False, label='New Supplier Name')
+
     class Meta:
         model = Drug
-        fields = ['name', 'quantity', 'price_per_unit', 'date_received', 'supplier', 'debit', 'credit', 'description']
+        fields = ['name', 'quantity', 'price_per_unit', 'date_received', 'supplier', 'description']
         widgets = {
             'date_received': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'supplier': SupplierSelect(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Update the supplier queryset for the SupplierSelect widget
+        self.fields['supplier'].queryset = Supplier.objects.all()
+
+    def save(self, commit=True):
+        new_supplier_name = self.cleaned_data.get('new_supplier_name')
+        if new_supplier_name:
+            supplier, created = Supplier.objects.get_or_create(name=new_supplier_name)
+            self.instance.supplier = supplier
+
+        return super().save(commit)
 #for student related form
 class DoctorUserForm(forms.ModelForm):
     class Meta:

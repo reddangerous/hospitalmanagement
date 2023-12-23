@@ -118,6 +118,7 @@ urlpatterns += [
     path('drug/<int:drug_id>/prescribe/', views.prescribe_drug, name='prescribe_drug'),
     path('drug/<int:drug_id>/restock/', views.restock_drug, name='restock_drug'),
     path('drug/<int:drug_id>/generate_report/', views.generate_report, name='generate_report'),
+    path('fetch_drug_details/', views.fetch_drug_details, name='fetch_drug_details'),
     # Add other URL patterns for new views
 ]
 #Developed By : sumit kumar

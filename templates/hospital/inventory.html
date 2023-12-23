@@ -48,7 +48,7 @@
       <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
       <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
       <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    
+        
     </head>
     <br><br><br>
     <!------ signup page for doctor by admin(sumit)  ---------->
@@ -71,17 +71,11 @@
                         <div class="form-group">
                             {% render_field form.price_per_unit class="form-control" placeholder="Price per Unit" %}
                         </div>
-                        <div class="form-group">
+                        <div class="form-group"> Select date recieved
                             {% render_field form.date_received class="form-control" placeholder="Date received" %}
                         </div>
                         <div class="form-group">
                             {% render_field form.supplier class="form-control" placeholder="Supplier(optional)" %}
-                        </div>
-                        <div class="form-group">
-                            {% render_field form.credit class="form-control" placeholder="Credit (optional)" %}
-                        </div>
-                        <div class="form-group">
-                            {% render_field form.debit class="form-control" placeholder="Debit (optional)" %}
                         </div>
                           <div class="form-group">
                               {% render_field form.description class="form-control" placeholder="Description" %}
@@ -102,45 +96,39 @@
           <table class="table">
               <thead>
                   <tr>
+                        <th>Date Received</th>
                       <th>Name</th>
                       <th>Description</th>
                       <th>Quantity</th>
-                      <th>Price</th>
-                      <th>Action</th>
+                      <th>Price per Unit</th>
+                      <th>Total Price</th>
+                        <th>Supplier</th>
                   </tr>
               </thead>
               <tbody>
                   {% for drug in drugs %}
                       <tr>
-                          <td>{{ drug.name }}</td>
+
+                            <td>{{ drug.date_received }}</td>
+                            <td>
+                            <form class="drug-form" method="post" action="{% url 'fetch_drug_details' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="drug_id" value="{{ drug.id }}">
+                                <button class="btn btn-info" type="submit">{{ drug.name }}</button>
+                            </form>
+                        </td>
                           <td>{{ drug.description }}</td>
                           <td>{{ drug.quantity }}</td>
-                          <td>{{ drug.price }}</td>
-                          <td class="action-icons">
-                              <a href="{% url 'prescribe_drug' drug.id %}" class="btn btn-primary" title="Prescribe Drug">
-                                  <i class="bi bi-file-earmark-medical"></i>
-                              </a>
-                              <a href="{% url 'restock_drug' drug.id %}" class="btn btn-secondary" title="Restock Drug">
-                                  <i class="bi bi-arrow-up-square"></i>
-                              </a>
-                              <a href="{% url 'drug_details' drug.id %}" class="btn btn-info" title="View Details">
-                                  <i class="bi bi-eye"></i>
-                              </a>
-                              <a href="{% url 'edit_drug' drug.id %}" class="btn btn-warning" title="Edit Drug">
-                                  <i class="bi bi-pencil"></i>
-                              </a>
-                              <a href="{% url 'delete_drug' drug.id %}" class="btn btn-danger" title="Delete Drug">
-                                  <i class="bi bi-trash"></i>
-                              </a>
-                              <a href="{% url 'generate_report' drug.id %}" class="btn btn-success" title="Generate Report">
-                                  <i class="bi bi-file-earmark-text"></i>
-                              </a>
-                          </td>
+                          <td>{{ drug.price_per_unit }} KSHs</td>
+                          <td>{{ drug.total_price }} KSHs</td>
+                          <td >{{drug.supplier}}</td>
                       </tr>
                   {% endfor %}
               </tbody>
           </table>
       </div>
+
+
   </div>
   
   {% endblock content %}

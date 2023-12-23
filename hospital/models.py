@@ -86,9 +86,9 @@ class Drug(models.Model):
     price_per_unit = models.DecimalField(max_digits=10, decimal_places=2)
     date_received = models.DateField()
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, null=True)
-    debit = models.DecimalField(max_digits=10, decimal_places=2)
-    credit = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField()
+    def total_price(self):
+        return self.quantity * self.price_per_unit
 
 class Prescription(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)

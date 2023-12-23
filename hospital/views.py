@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect,reverse
+from django.shortcuts import render,redirect,reverse, get_object_or_404
 from . import forms,models
 from django.db.models import Sum
 from django.contrib.auth.models import Group
@@ -20,6 +20,15 @@ def inventory(request):
    else:
        form = DrugForm()
    return render(request, 'hospital/inventory.html', {'drugs': drugs, 'form': form})
+
+def fetch_drug_details(request):
+    if request.method == 'POST':
+        drug_id = request.POST.get('drug_id')
+        drug = get_object_or_404(Drug, id=drug_id)
+        context = {'drug': drug}
+        return render(request, 'hospital/fetch_drug_details.html', context)
+    else:
+        return JsonResponse({'error': 'Invalid request'})
 
 def prescribe_drug(request, drug_id):
     drug = Drug.objects.get(pk=drug_id)
