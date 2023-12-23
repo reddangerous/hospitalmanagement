@@ -12,36 +12,32 @@ class AdminSigupForm(forms.ModelForm):
         widgets = {
         'password': forms.PasswordInput()
         }
-class SupplierSelect(forms.Select):
-    def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
-        option = super().create_option(name, value, label, selected, index, subindex=subindex, attrs=attrs)
-        option['data-custom'] = self.choices.queryset.filter(pk=value).exists()
-        return option
+
 
 class DrugForm(forms.ModelForm):
-    new_supplier_name = forms.CharField(max_length=255, required=False, label='New Supplier Name')
+   new_supplier_name = forms.CharField(max_length=255, required=False, label='New Supplier Name')
 
-    class Meta:
-        model = Drug
-        fields = ['name', 'quantity', 'price_per_unit', 'date_received', 'supplier', 'description']
-        widgets = {
-            'date_received': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'supplier': SupplierSelect(attrs={'class': 'form-control'}),
-        }
+   class Meta:
+       model = Drug
+       fields = ['name', 'quantity', 'price_per_unit', 'date_received', 'description']
+       widgets = {
+           'date_received': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+       }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+   def save(self, commit=True):
+       new_supplier_name = self.cleaned_data.get('new_supplier_name')
 
-        # Update the supplier queryset for the SupplierSelect widget
-        self.fields['supplier'].queryset = Supplier.objects.all()
+       # If a new_supplier_name is provided, create a new supplier
+       if new_supplier_name:
+           supplier, created = Supplier.objects.get_or_create(name=new_supplier_name)
+           self.instance.supplier = supplier
+       else:
+           # If no new_supplier_name, set supplier to None
+           self.instance.supplier = None
 
-    def save(self, commit=True):
-        new_supplier_name = self.cleaned_data.get('new_supplier_name')
-        if new_supplier_name:
-            supplier, created = Supplier.objects.get_or_create(name=new_supplier_name)
-            self.instance.supplier = supplier
+       return super().save(commit)
 
-        return super().save(commit)
+
 #for student related form
 class DoctorUserForm(forms.ModelForm):
     class Meta:
