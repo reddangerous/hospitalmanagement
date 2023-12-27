@@ -1,6 +1,7 @@
 {% extends 'hospital/admin_base.html' %}
 
 {% block content %}
+{%load static%}
 
 <head>
   <style media="screen">
@@ -99,7 +100,7 @@
   {% for activity in recent_activities %}
     <div class="col-md-4">
       <div class="activity-card">
-        <img src="{{ activity.drug.image.url }}" alt="{{ activity.drug.name }}">
+        <img src="{% static activity.image.url %}" alt="{{ activity.drug.name }}">
         <div class="activity-card-body">
           <h5 class="card-title">{{ activity.drug.name }}</h5>
           <p class="card-text">Quantity: {{ activity.quantity }}</p>

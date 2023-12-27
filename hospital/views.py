@@ -45,8 +45,10 @@ from django.db.models import Sum, F, ExpressionWrapper, DecimalField
 
 def inventory_dashboard(request):
     # Calculate total items, total quantity, and total value
+  
     total_items = Drug.objects.count()
     total_quantity = Drug.objects.aggregate(Sum('quantity'))['quantity__sum'] or 0
+    
 
     # Manually calculate total value based on price_per_unit and quantity
     total_value = Drug.objects.annotate(

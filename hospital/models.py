@@ -97,6 +97,12 @@ class Prescription(models.Model):
     quantity = models.IntegerField()
     date_prescribed = models.DateTimeField(auto_now_add=True)
 
+
+from django.db import models
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 class Activity(models.Model):
     ACTION_CHOICES = [
         ('ADD', 'Add'),
@@ -111,8 +117,34 @@ class Activity(models.Model):
     action = models.CharField(max_length=20, choices=ACTION_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # Calculated fields
+    quantity = models.PositiveIntegerField(null=True)
+    total_value = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+
     def __str__(self):
         return f'{self.action} - {self.drug.name}'
+
+# Signal to update Activity model when Drug model is saved
+@receiver(post_save, sender='hospital.Drug')
+def update_activity(sender, instance, created, **kwargs):
+    if created:
+        # If a new drug is added, record an 'ADD' activity
+        Activity.objects.create(
+            drug=instance,
+            action='ADD',
+            quantity=instance.quantity,
+            total_value=instance.total_price(),
+            image = instance.image
+        )
+    else:
+        # If an existing drug is updated, record an 'UPDATE' activity
+        Activity.objects.create(
+            drug=instance,
+            action='UPDATE',
+            quantity=instance.quantity,
+            total_value=instance.total_price(),
+            image = instance.image
+        )
 
 
 #Developed By : sumit kumar
