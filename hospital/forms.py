@@ -19,7 +19,7 @@ class DrugForm(forms.ModelForm):
 
    class Meta:
        model = Drug
-       fields = ['name', 'quantity', 'price_per_unit', 'date_received', 'description']
+       fields = ['name', 'quantity', 'price_per_unit', 'date_received', 'description', 'image']
        widgets = {
            'date_received': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
        }

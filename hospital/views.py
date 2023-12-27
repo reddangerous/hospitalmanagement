@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required,user_passes_test
 from datetime import datetime,timedelta,date
 from django.conf import settings
 from django.db.models import Q
-from .models import Drug, Prescription
+from .models import Drug, Prescription, Activity
 from .forms import DrugForm
 def inventory(request):
    drugs = Drug.objects.all()
@@ -19,7 +19,17 @@ def inventory(request):
            return redirect('inventory')
    else:
        form = DrugForm()
-   return render(request, 'hospital/inventory.html', {'drugs': drugs, 'form': form})
+   return render(request, 'hospital/inventory.html')
+def add_inventory(request):
+   drugs = Drug.objects.all()
+   if request.method == 'POST':
+       form = DrugForm(request.POST)
+       if form.is_valid():
+           form.save()
+           return redirect('add_inventory')
+   else:
+       form = DrugForm()
+   return render(request, 'hospital/add_inventory.html', {'drugs': drugs, 'form': form})
 
 def fetch_drug_details(request):
     if request.method == 'POST':
@@ -29,6 +39,35 @@ def fetch_drug_details(request):
         return render(request, 'hospital/fetch_drug_details.html', context)
     else:
         return JsonResponse({'error': 'Invalid request'})
+    
+
+from django.db.models import Sum, F, ExpressionWrapper, DecimalField
+
+def inventory_dashboard(request):
+    # Calculate total items, total quantity, and total value
+    total_items = Drug.objects.count()
+    total_quantity = Drug.objects.aggregate(Sum('quantity'))['quantity__sum'] or 0
+
+    # Manually calculate total value based on price_per_unit and quantity
+    total_value = Drug.objects.annotate(
+        total_price=ExpressionWrapper(
+            F('quantity') * F('price_per_unit'),
+            output_field=DecimalField()
+        )
+    ).aggregate(Sum('total_price'))['total_price__sum'] or 0
+
+    # Retrieve recent activities
+    recent_activities = Activity.objects.select_related('drug').order_by('-created_at')[:3]
+
+    context = {
+        'total_items': total_items,
+        'total_quantity': total_quantity,
+        'total_value': total_value,
+        'recent_activities': recent_activities,
+    }
+
+    return render(request, 'hospital/inventory_dasboard.html', context)
+
 
 def prescribe_drug(request, drug_id):
     drug = Drug.objects.get(pk=drug_id)
@@ -74,6 +113,25 @@ def delete_drug(request, drug_id):
 def generate_report(request, drug_id):
     drug = get_object_or_404(Drug, pk=drug_id)
     return render(request, 'hospital/generate_report.html', {'drug': drug})
+
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from django.utils.text import slugify
+
+def download_report(request, drug_id):
+    drug = Drug.objects.get(pk=drug_id)
+
+    # Generate report content using a template
+    report_content = render_to_string('hospital/report_template.html', {'drug': drug})
+
+    # Create a response with appropriate content type and headers
+    response = HttpResponse(content_type='text/plain')
+    response['Content-Disposition'] = f'attachment; filename={slugify(drug.name)}_report.txt'
+
+    # Write the report content to the response
+    response.write(report_content)
+
+    return response
 
 # Create your views here.
 def home_view(request):

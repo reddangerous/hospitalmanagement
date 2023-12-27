@@ -1,0 +1,35 @@
+{% extends 'hospital/admin_base.html' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1>Inventory Report: {{ drug.name }}</h1>
+
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">{{ drug.name }} Inventory Report</h5>
+                <p class="card-text">Date Received: {{ drug.date_received }}</p>
+                <p class="card-text">Description: {{ drug.description }}</p>
+                <p class="card-text">Quantity: {{ drug.quantity }}</p>
+                <p class="card-text">Price per Unit: {{ drug.price_per_unit }} KSHs</p>
+                <p class="card-text">Total Price: {{ drug.total_price }} KSHs</p>
+
+                <!-- Add more details as needed -->
+
+                <!-- Remaining Stock and Quantity Prescribed -->
+                <p class="card-text mt-3">Remaining Stock: {{ drug.quantity }}</p>
+                <p class="card-text">Quantity Prescribed: {{ drug.prescription_set.aggregate(Sum('quantity')) }}</p>
+
+                <!-- Actions -->
+                <div class="btn-group" role="group">
+                    <a href="{% url 'prescribe_drug' drug.id %}" class="btn btn-primary" title="Prescribe Drug">Prescribe</a>
+                    <a href="{% url 'restock_drug' drug.id %}" class="btn btn-secondary" title="Restock Drug">Restock</a>
+                    <a href="{% url 'edit_drug' drug.id %}" class="btn btn-warning" title="Edit Drug">Edit</a>
+                    <a href="{% url 'delete_drug' drug.id %}" class="btn btn-danger" title="Delete Drug">Delete</a>
+
+                    <!-- Downloadable Report Link -->
+                    <a href="{% url 'download_report' drug.id %}" class="btn btn-success" title="Download Report">Download Report</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

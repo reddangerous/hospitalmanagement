@@ -1,0 +1,137 @@
+{% extends 'hospital/admin_base.html' %}
+
+
+
+    {% load widget_tweaks %}
+    {% block content %}
+    
+    <head>
+      <style media="screen">
+        a:link {
+          text-decoration: none;
+        }
+    
+        .note {
+          text-align: center;
+          height: 80px;
+          background: -webkit-linear-gradient(left, #0072ff, #8811c5);
+          color: #fff;
+          font-weight: bold;
+          line-height: 80px;
+        }
+    
+        .form-content {
+          padding: 5%;
+          border: 1px solid #ced4da;
+          margin-bottom: 2%;
+        }
+    
+        .form-control {
+          border-radius: 1.5rem;
+        }
+    
+        .btnSubmit {
+          border: none;
+          border-radius: 1.5rem;
+          padding: 1%;
+          width: 20%;
+          cursor: pointer;
+          background: #0062cc;
+          color: #fff;
+        }
+    
+        .menu {
+          top: 50px;
+        }
+      </style>
+    
+      <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+      <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        
+    </head>
+    <br><br><br>
+    <!------ signup page for doctor by admin(sumit)  ---------->
+    <div class="row">
+      <div class="col-md-6">
+          <form method="post" class="container drug-form">
+              {% csrf_token %}
+              <div class="container drug-form">
+                  <div class="form">
+                      <div class="note">
+                          <p>Add Drugs to the Inventory</p>
+                      </div>
+                      <div class="form-content">
+                          <div class="form-group">
+                              {% render_field form.name class="form-control" placeholder="Drug Name" %}
+                          </div>
+                          <div class="form-group"> Add image(not required)
+                            {% render_field form.image class="form-control" placeholder="Drug image" %}
+                        </div>
+                          <div class="form-group">
+                            {% render_field form.quantity class="form-control" placeholder="Quantity" %}
+                        </div>
+                        <div class="form-group">
+                            {% render_field form.price_per_unit class="form-control" placeholder="Price per Unit" %}
+                        </div>
+                        <div class="form-group"> Select date recieved
+                            {% render_field form.date_received class="form-control" placeholder="Date received" %}
+                        </div>
+                        <div class="form-group">
+                            {% render_field form.new_supplier_name class="form-control" placeholder="Supplier(optional)" %}
+                        </div>
+                          <div class="form-group">
+                              {% render_field form.description class="form-control" placeholder="Description" %}
+                          </div>
+                          
+                          <div class="form-group">
+                              {% render_field form.price class="form-control" placeholder="Price" %}
+                          </div>
+                      </div>
+                      <button type="submit" class="btnSubmit">Add Drug</button>
+                  </div>
+              </div>
+          </form>
+      </div>
+  
+      <div class="col-md-6">
+          <h1>Inventory</h1>
+          <table class="table">
+              <thead>
+                  <tr>
+                        <th>Date Received</th>
+                      <th>Name</th>
+                      <th>Description</th>
+                      <th>Quantity</th>
+                      <th>Price per Unit</th>
+                      <th>Total Price</th>
+                        <th>Supplier</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for drug in drugs %}
+                      <tr>
+
+                            <td>{{ drug.date_received }}</td>
+                            <td>
+                            <form class="drug-form" method="post" action="{% url 'fetch_drug_details' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="drug_id" value="{{ drug.id }}">
+                                <button class="btn btn-info" type="submit">{{ drug.name }}</button>
+                            </form>
+                        </td>
+                          <td>{{ drug.description }}</td>
+                          <td>{{ drug.quantity }}</td>
+                          <td>{{ drug.price_per_unit }} KSHs</td>
+                          <td>{{ drug.total_price }} KSHs</td>
+                          <td >{{drug.supplier}}</td>
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+      </div>
+
+
+  </div>
+  
+  {% endblock content %}

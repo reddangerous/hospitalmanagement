@@ -112,6 +112,7 @@ urlpatterns +=[
 #---------FOR INVENTORY RELATED URLS-------------------------------------
 urlpatterns += [
     path('inventory/', views.inventory, name='inventory'),
+    path('add_inventory/', views.add_inventory, name='add_inventory'),
     path('drug/<int:drug_id>/', views.drug_details, name='drug_details'),
     path('drug/<int:drug_id>/edit/', views.edit_drug, name='edit_drug'),
     path('drug/<int:drug_id>/delete/', views.delete_drug, name='delete_drug'),
@@ -119,6 +120,8 @@ urlpatterns += [
     path('drug/<int:drug_id>/restock/', views.restock_drug, name='restock_drug'),
     path('drug/<int:drug_id>/generate_report/', views.generate_report, name='generate_report'),
     path('fetch_drug_details/', views.fetch_drug_details, name='fetch_drug_details'),
+    path('download_report/<int:drug_id>/', views.download_report, name='download_report'),
+    path('inventory-dashboard/', views.inventory_dashboard, name='inventory_dashboard'),
     # Add other URL patterns for new views
 ]
 #Developed By : sumit kumar

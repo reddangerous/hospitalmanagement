@@ -87,6 +87,7 @@ class Drug(models.Model):
     date_received = models.DateField()
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, null=True)
     description = models.TextField()
+    image= models.ImageField(upload_to='profile_pic/PatientProfilePic/',null=True,blank=True)
     def total_price(self):
         return self.quantity * self.price_per_unit
 
@@ -96,7 +97,22 @@ class Prescription(models.Model):
     quantity = models.IntegerField()
     date_prescribed = models.DateTimeField(auto_now_add=True)
 
+class Activity(models.Model):
+    ACTION_CHOICES = [
+        ('ADD', 'Add'),
+        ('DELETE', 'Delete'),
+        ('UPDATE', 'Update'),
+        ('RESTOCK', 'Restock'),
+        ('GENERATE_REPORT', 'Generate Report'),
+    ]
 
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    drug = models.ForeignKey(Drug, on_delete=models.CASCADE)
+    action = models.CharField(max_length=20, choices=ACTION_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.action} - {self.drug.name}'
 
 
 #Developed By : sumit kumar
