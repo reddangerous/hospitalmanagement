@@ -124,6 +124,8 @@ urlpatterns += [
     path('download_report/<int:drug_id>/', views.download_report, name='download_report'),
     path('inventory-dashboard/', views.inventory_dashboard, name='inventory_dashboard'),
     path('reports-home/', views.reports_home, name='reports_home'),
+    path('download-pdf/<int:drug_id>/', views.download_pdf, name='download_pdf'),
+    path('download-excel/<int:drug_id>/', views.download_excel, name='download_excel'),
     # Add other URL patterns for new views
 ]
 #Developed By : sumit kumar

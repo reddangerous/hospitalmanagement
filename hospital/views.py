@@ -10,6 +10,36 @@ from django.conf import settings
 from django.db.models import Q
 from .models import Drug, Prescription, Activity
 from .forms import DrugForm
+from tablib import Dataset
+from .models import Drug
+
+def download_pdf(request, drug_id):
+    drug = get_object_or_404(Drug, id=drug_id)
+    template = get_template('hospital/pdf_report_template.html')
+    context = {'drug': drug}
+    html = template.render(context)
+    
+    # Using xhtml2pdf to generate PDF
+    result = io.BytesIO()
+    pdf = pisa.pisaDocument(io.BytesIO(html.encode("ISO-8859-1")), result)
+    
+    if not pdf.err:
+        response = HttpResponse(result.getvalue(), content_type='application/pdf')
+        response['Content-Disposition'] = f'filename="{drug.name}_report.pdf"'
+        return response
+    return HttpResponse("Error rendering PDF", status=500)
+
+def download_excel(request, drug_id):
+    drug = get_object_or_404(Drug, id=drug_id)
+    
+    # Using django-import-export to create an Excel file
+    dataset = Dataset()
+    dataset.append(['Name', 'Description', 'Quantity', 'Price per Unit', 'Total Price'])
+    dataset.append([drug.name, drug.description, drug.quantity, drug.price_per_unit, drug.total_price()])
+    
+    response = HttpResponse(dataset.xlsx, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = f'attachment; filename="{drug.name}_report.xlsx"'
+    return response
 def inventory(request):
    drugs = Drug.objects.all()
    if request.method == 'POST':

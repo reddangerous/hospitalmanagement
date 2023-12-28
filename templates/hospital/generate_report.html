@@ -58,7 +58,9 @@
                                 <a class="dropdown-item" href="{% url 'drug_details' drug.id %}" id="viewDetailsBtn">View Details</a>
                                 <a class="dropdown-item" href="{% url 'edit_drug' drug.id %}" id="editBtn">Edit Drug</a>
                                 <a class="dropdown-item" href="{% url 'delete_drug' drug.id %}" id="deleteBtn">Delete Drug</a>
-                                <a class="dropdown-item" href="{% url 'generate_report' drug.id %}" id="generateReportBtn">Generate Report</a>
+                                <a class="dropdown-item" href="{% url 'download_pdf' drug.id %}" >Download PDF</a>
+                                <a class="dropdown-item" href="{% url 'download_excel' drug.id %}" >Download Excel</a>
+                                
                             </div>
                         </div>
                     </div>
