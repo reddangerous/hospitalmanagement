@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Doctor,Patient,Appointment,PatientDischargeDetails,Supplier,Drug, Prescription
+from .models import Doctor,Patient,Appointment,PatientDischargeDetails,Supplier,Drug, Prescription, Activity
 # Register your models here.
 class DoctorAdmin(admin.ModelAdmin):
     pass
@@ -29,4 +29,8 @@ admin.site.register(Supplier, SupplierAdmin)
 class PrescriptionAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Prescription, PrescriptionAdmin)
+
+class ActivityAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(Activity, ActivityAdmin)
 

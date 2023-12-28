@@ -1,0 +1,24 @@
+{% extends 'hospital/admin_base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <h1 class="mt-4 mb-4">Reports Home</h1>
+
+    <div class="row">
+        {% for drug in drugs %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ drug.name }}</h5>
+                        <p class="card-text">Quantity: {{ drug.quantity }}</p>
+                        <p class="card-text">Price per Unit: {{ drug.price_per_unit }} KSH</p>
+                        <a href="{% url 'generate_report' drug.id %}" class="btn btn-primary">Generate Report</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock content %}

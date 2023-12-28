@@ -114,7 +114,28 @@ def delete_drug(request, drug_id):
     return render(request, 'hospital/delete_drug.html', {'drug': drug})
 def generate_report(request, drug_id):
     drug = get_object_or_404(Drug, pk=drug_id)
-    return render(request, 'hospital/generate_report.html', {'drug': drug})
+    
+    prescribed_quantity = Prescription.objects.filter(drug=drug).aggregate(quantity=Sum('quantity'))['quantity'] or 0
+
+    prescriptions = Prescription.objects.filter(drug=drug).order_by('-date_prescribed')
+    patients_prescribed_to = [prescription.patient.get_name for prescription in prescriptions] or ["Not yet prescribed to anyone"]
+    dates_prescribed = [prescription.date_prescribed for prescription in prescriptions] or ["Not yet prescribed"]
+
+    context = {
+        'drug': drug,
+        'prescribed_quantity': prescribed_quantity,
+        'patients_prescribed_to': patients_prescribed_to,
+        'dates_prescribed': dates_prescribed,
+    }
+
+    return render(request, 'hospital/generate_report.html', context)
+
+
+#view for reports dash
+def reports_home(request):
+    drugs = Drug.objects.all()
+    return render(request, 'hospital/reports_home.html', {'drugs': drugs})
+
 
 from django.http import HttpResponse
 from django.template.loader import render_to_string

@@ -10,6 +10,9 @@
       border-radius: 15px;
       margin-bottom: 20px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: 0.4s;
+        border: 2px solid #5bc995;
+        
     }
 
     .card-body {
@@ -30,35 +33,63 @@
     }
 
    h3 {
-      font-weight: 600;
+      font-weight: 900;
       margin-bottom: 15px;
+      font-size: 2rem;
+      font-family: 'Poppins', sans-serif;
+      font
     }
 
     /* Icon styles */
-    .card-icon {
+    svg {
       font-size: 2.5rem;
       margin-bottom: 10px;
     }
+    p{
+        font-size: 1.5rem;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 500;
+    }
+    .row{
+    padding-left: 100px;
+        margin-right: 10px;
+        width:95%;
+    }
+    h1{
+        font-family: 'Poppins', sans-serif;
+        font-weight: 900;
+        font-size: 3rem;
+        text-align: center;
+        margin-bottom: 50px;
+    }
+   
   </style>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.17.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.17.0/font/bootstrap-icons.css" rel="stylesheet">
+
   <!-- Add your existing head content here -->
 </head>
 
-<br><br><br>
-
+<div class = 'root'> 
+    <h1> Inventory Dashboard</h1>
 <div class="row">
      <!-- Dashboard Card -->
-  <div class="col-md-6" id='dashboard'>
-    <div class="card">
-      <div class="card-body">
-        <i class="bi bi-speedometer2 card-icon"></i>
-        <h5 class="card-title">Dashboard</h5>
+  <div class="col-md-6">
+    <div class="card" id='dashboard'>
+      <div class="card-body" id='dashboard'>
+        <span><svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="#337AB7" class="bi bi-speedometer" viewBox="0 0 16 16">
+            <path d="M8 2a.5.5 0 0 1 .5.5V4a.5.5 0 0 1-1 0V2.5A.5.5 0 0 1 8 2M3.732 3.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707zM2 8a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 8m9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5m.754-4.246a.389.389 0 0 0-.527-.02L7.547 7.31A.91.91 0 1 0 8.85 8.569l3.434-4.297a.389.389 0 0 0-.029-.518z"/>
+            <path fill-rule="evenodd" d="M6.664 15.889A8 8 0 1 1 9.336.11a8 8 0 0 1-2.672 15.78zm-4.665-4.283A11.945 11.945 0 0 1 8 10c2.186 0 4.236.585 6.001 1.606a7 7 0 1 0-12.002 0z"/>
+          </svg></span>
+        <h3 class="card-title">Dashboard</h3>
         <p class="card-text">View the inventory dashboard.</p>
-        <a href="{% url 'inventory_dashboard' %}" class="btn btn-primary">Go to Inventory Dashboard</a>
+        <a href="{% url 'inventory_dashboard' %}" class="btn btn-success">Go to Inventory Dashboard</a>
       </div>
     </div>
   </div>
@@ -66,10 +97,12 @@
   <div class="col-md-6" id = 'inventory'>
     <div class="card">
       <div class="card-body">
-        <i class="bi bi-box card-icon"></i>
-        <h5 class="card-title">Add Inventory</h5>
+      <span><svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="#FC8213" class="bi bi-file-earmark-spreadsheet" viewBox="0 0 16 16">
+        <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V9H3V2a1 1 0 0 1 1-1h5.5zM3 12v-2h2v2zm0 1h2v2H4a1 1 0 0 1-1-1zm3 2v-2h3v2zm4 0v-2h3v1a1 1 0 0 1-1 1zm3-3h-3v-2h3zm-7 0v-2h3v2z"/>
+      </svg></span>
+        <h3 class="card-title">Add Inventory</h3>
         <p class="card-text">Add drugs to the inventory.</p>
-        <a href="{% url 'add_inventory' %}" class="btn btn-primary">Go to Add Inventory</a>
+        <a href="{% url 'add_inventory' %}" class="btn btn-success">Go to Add Inventory</a>
       </div>
     </div>
   </div>
@@ -80,10 +113,13 @@
   <div class="col-md-6" id = 'report'>
     <div class="card">
       <div class="card-body">
-        <i class="bi bi-file-earmark-text card-icon"></i>
-        <h5 class="card-title">Reports</h5>
+       <span><svg xmlns="http://www.w3.org/2000/svg "width="60" height="60" fill="#337AB7" class="bi bi-stack" viewBox="0 0 16 16">
+        <path d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.598.598 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66zM7.733.063a.598.598 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.598.598 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535L7.733.063z"/>
+        <path d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.598.598 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.659z"/>
+      </svg><span>
+        <h3 class="card-title">Reports</h3>
         <p class="card-text">Generate and view reports.</p>
-        <a href="#" class="btn btn-primary">Go to Reports</a>
+        <a href="{% url 'reports_home' %}"  class="btn btn-success">Go to Reports</a>
       </div>
     </div>
   </div>
@@ -92,15 +128,17 @@
   <div class="col-md-6" id = 'search'>
     <div class="card">
       <div class="card-body">
-        <i class="bi bi-search card-icon"></i>
-        <h5 class="card-title">Search</h5>
+     <span><svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="#FC8213" class="bi bi-search" viewBox="0 0 16 16">
+        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+      </svg></span>
+        <h3 class="card-title">Search</h3>
         <p class="card-text">Search for drugs in the inventory.</p>
-        <a href="#" class="btn btn-primary">Go to Search</a>
+        <a href="#" class="btn btn-success">Go to Search</a>
       </div>
     </div>
   </div>
 </div>
-
+</div>
 <!-- The rest of your HTML content remains unchanged -->
 
 {% endblock content %}

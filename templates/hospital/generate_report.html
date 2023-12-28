@@ -1,35 +1,83 @@
+<!-- hospital/base_modal.html -->
 {% extends 'hospital/admin_base.html' %}
 
 {% block content %}
-    <div class="container mt-4">
-        <h1>Inventory Report: {{ drug.name }}</h1>
+<head>
+    <style media="screen">
+      /* Add your existing styles here */
+  
+      .container  {
+        border-radius: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          transition: 0.4s;
+          border: 2px solid #5bc995;
+          
+      }
+      #styled-text {
+        border-bottom: 2px solid #5bc995;
+        border-top: 1px solid #5bc995;
+        border-left: 1px solid #5bc995;
+        border-right: 1px solid #5bc995;
+        display: flex;
+        flex-direction: row;
+        justify-content: end;
+        align-items: right;
+        text-align: right;
 
-        <div class="card mt-4">
-            <div class="card-body">
-                <h5 class="card-title">{{ drug.name }} Inventory Report</h5>
-                <p class="card-text">Date Received: {{ drug.date_received }}</p>
-                <p class="card-text">Description: {{ drug.description }}</p>
-                <p class="card-text">Quantity: {{ drug.quantity }}</p>
-                <p class="card-text">Price per Unit: {{ drug.price_per_unit }} KSHs</p>
-                <p class="card-text">Total Price: {{ drug.total_price }} KSHs</p>
+       
+    }
+    </style>
+    </head>
+    <div class="modal-content">
+        <div class="modal-body">
+           
+            
 
-                <!-- Add more details as needed -->
-
-                <!-- Remaining Stock and Quantity Prescribed -->
-                <p class="card-text mt-3">Remaining Stock: {{ drug.quantity }}</p>
-                <p class="card-text">Quantity Prescribed: {{ drug.prescription_set.aggregate(Sum('quantity')) }}</p>
-
-                <!-- Actions -->
-                <div class="btn-group" role="group">
-                    <a href="{% url 'prescribe_drug' drug.id %}" class="btn btn-primary" title="Prescribe Drug">Prescribe</a>
-                    <a href="{% url 'restock_drug' drug.id %}" class="btn btn-secondary" title="Restock Drug">Restock</a>
-                    <a href="{% url 'edit_drug' drug.id %}" class="btn btn-warning" title="Edit Drug">Edit</a>
-                    <a href="{% url 'delete_drug' drug.id %}" class="btn btn-danger" title="Delete Drug">Delete</a>
-
-                    <!-- Downloadable Report Link -->
-                    <a href="{% url 'download_report' drug.id %}" class="btn btn-success" title="Download Report">Download Report</a>
+            <div class="container text-left">
+                    <div class="col  rounded p-4 " >
+                        <h1 class="text-center">{{ drug.name }} Inventory Report</h1>
+                        <p class="text-right"><strong>Date Received:</strong> {{ drug.date_received }}</p>
+                        <p class="text-left"><strong>Name:</strong> {{ drug.name }}</p>
+                        <p class="text-left"><strong>Description:</strong> {{ drug.description }}</p>
+                        <p class="text-left"><strong>Quantity:</strong> {{ drug.quantity }}</p>
+                        <p class="text-left"><strong>Price per Unit:</strong> {{ drug.price_per_unit }} KSHs</p>
+                        <p class="text-left"><strong>Total Price:</strong> {{ drug.total_price }} KSHs</p>
+                        <p class="text-left"><strong>Prescribed Quantity: </strong> {{ prescribed_quantity|default_if_none:"0" }}</p>
+                        <p class="text-left"><strong>Patients Prescribed to : </strong> {{ patients_prescribed_to }}</p>
+                        <p class="text-left"><strong>Prescription Dates : </strong> {{ dates_prescribed }}</p>
+                        <p class="text-right" id = 'styled-text'><strong>Total Price:</strong> {{ drug.total_price }} KSHs</p>
+                        <!-- Actions Dropdown -->
+                        <div class="dropdown mt-3">
+                            <button class="btn btn-success dropdown-toggle" type="button" id="actionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Actions
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="actionsDropdown">
+                                <a class="dropdown-item" href="{% url 'prescribe_drug' drug.id %}" id="prescribeBtn">Prescribe Drug</a>
+                                <a class="dropdown-item" href="{% url 'restock_drug' drug.id %}" id="restockBtn">Restock Drug</a>
+                                <a class="dropdown-item" href="{% url 'drug_details' drug.id %}" id="viewDetailsBtn">View Details</a>
+                                <a class="dropdown-item" href="{% url 'edit_drug' drug.id %}" id="editBtn">Edit Drug</a>
+                                <a class="dropdown-item" href="{% url 'delete_drug' drug.id %}" id="deleteBtn">Delete Drug</a>
+                                <a class="dropdown-item" href="{% url 'generate_report' drug.id %}" id="generateReportBtn">Generate Report</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        
     </div>
+{% endblock %}
+
+{% block extra_head %}
+    {{ block.super }}
+    <!-- Add Bootstrap CSS link here -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block extra_scripts %}
+    {{ block.super }}
+    <!-- Add Bootstrap JS and jQuery links here -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 {% endblock %}

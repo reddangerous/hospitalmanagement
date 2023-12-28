@@ -20,6 +20,7 @@ from django.contrib.auth.views import LoginView,LogoutView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.home_view,name=''),
+    
 
 
     path('aboutus', views.aboutus_view),
@@ -122,6 +123,7 @@ urlpatterns += [
     path('fetch_drug_details/', views.fetch_drug_details, name='fetch_drug_details'),
     path('download_report/<int:drug_id>/', views.download_report, name='download_report'),
     path('inventory-dashboard/', views.inventory_dashboard, name='inventory_dashboard'),
+    path('reports-home/', views.reports_home, name='reports_home'),
     # Add other URL patterns for new views
 ]
 #Developed By : sumit kumar
