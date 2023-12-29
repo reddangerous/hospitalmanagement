@@ -1,0 +1,33 @@
+<!-- hospital/drug_search.html -->
+{% extends 'hospital/admin_base.html' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2 class="text-center">Search Drugs</h2>
+        <form class="form-inline my-2 my-lg-0" action="{% url 'search_drugs' %}" method="get">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search by name" aria-label="Search" name="q" value="{{ query }}">
+            <button class="btn btn-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+        
+        {% if drugs %}
+            <h3 class="mt-4">Search Results</h3>
+            <div class="row">
+                {% for drug in drugs %}
+                    <div class="col-md-4">
+                        <div class="card p-4">
+                            <div class="card-body">
+                                <h5 class="card-title text-center">{{ drug.name }}</h5>
+                                <p class="card-text text-left">Description: {{ drug.description }}</p>
+                                <p class="card-text text-left">Quantity: {{ drug.quantity }}</p>
+                                <p class="card-text text-left">Price per Unit: {{ drug.price_per_unit }} KSHs</p>
+                                <!-- Add more details as needed -->
+
+                                <a href="{% url 'generate_report' drug.id %}" class="btn btn-primary text-center">Generate Report</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

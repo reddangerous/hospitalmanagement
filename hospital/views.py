@@ -12,22 +12,24 @@ from .models import Drug, Prescription, Activity
 from .forms import DrugForm
 from tablib import Dataset
 from .models import Drug
+from weasyprint import HTML
+
+
+
+def search_drugs(request):
+    query = request.GET.get('q', '')
+    drugs = Drug.objects.filter(name__icontains=query)
+    return render(request, 'hospital/drug_search.html', {'query': query, 'drugs': drugs})
 
 def download_pdf(request, drug_id):
     drug = get_object_or_404(Drug, id=drug_id)
-    template = get_template('hospital/pdf_report_template.html')
     context = {'drug': drug}
-    html = template.render(context)
-    
-    # Using xhtml2pdf to generate PDF
-    result = io.BytesIO()
-    pdf = pisa.pisaDocument(io.BytesIO(html.encode("ISO-8859-1")), result)
-    
-    if not pdf.err:
-        response = HttpResponse(result.getvalue(), content_type='application/pdf')
-        response['Content-Disposition'] = f'filename="{drug.name}_report.pdf"'
-        return response
-    return HttpResponse("Error rendering PDF", status=500)
+    html = render(request, 'hospital/pdf_report_template.html', context).content.decode('utf-8')
+    pdf = HTML(string=html).write_pdf()
+
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = f'filename="{drug.name}_report.pdf"'
+    return response
 
 def download_excel(request, drug_id):
     drug = get_object_or_404(Drug, id=drug_id)
