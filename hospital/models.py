@@ -110,6 +110,7 @@ class Activity(models.Model):
         ('UPDATE', 'Update'),
         ('RESTOCK', 'Restock'),
         ('GENERATE_REPORT', 'Generate Report'),
+        ('PRESCRIBE', 'Prescribe')
     ]
 
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -134,7 +135,7 @@ def update_activity(sender, instance, created, **kwargs):
             action='ADD',
             quantity=instance.quantity,
             total_value=instance.total_price(),
-            image = instance.image
+            
         )
     else:
         # If an existing drug is updated, record an 'UPDATE' activity
@@ -143,7 +144,7 @@ def update_activity(sender, instance, created, **kwargs):
             action='UPDATE',
             quantity=instance.quantity,
             total_value=instance.total_price(),
-            image = instance.image
+            
         )
 
 

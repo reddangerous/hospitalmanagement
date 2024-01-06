@@ -100,11 +100,11 @@
   {% for activity in recent_activities %}
     <div class="col-md-4">
       <div class="activity-card">
-        <img src="{% static activity.image.url %}" alt="{{ activity.drug.name }}">
         <div class="activity-card-body">
           <h5 class="card-title">{{ activity.drug.name }}</h5>
           <p class="card-text">Quantity: {{ activity.quantity }}</p>
           <p class="card-text">Total Value: ${{ activity.total_value }}</p>
+          <p class="card-text">Action: {{ activity.action }}</p>
         </div>
       </div>
     </div>

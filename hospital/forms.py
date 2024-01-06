@@ -12,7 +12,11 @@ class AdminSigupForm(forms.ModelForm):
         widgets = {
         'password': forms.PasswordInput()
         }
-
+class PrescribeForm(forms.ModelForm):
+    patients=forms.ModelChoiceField(queryset=models.Patient.objects.all().filter(status=True),empty_label="Patient prescribed to ", to_field_name="user_id")
+    class Meta:
+        model=models.Prescription
+        fields=['quantity']
 
 class DrugForm(forms.ModelForm):
    new_supplier_name = forms.CharField(max_length=255, required=False, label='New Supplier Name')

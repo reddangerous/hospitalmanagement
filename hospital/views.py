@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required,user_passes_test
 from datetime import datetime,timedelta,date
 from django.conf import settings
 from django.db.models import Q
-from .models import Drug, Prescription, Activity
+from .models import Drug, Prescription, Activity, Patient
 from .forms import DrugForm
 from tablib import Dataset
 from .models import Drug
@@ -103,14 +103,25 @@ def inventory_dashboard(request):
     return render(request, 'hospital/inventory_dasboard.html', context)
 
 
+from .models import Drug, Prescription
+from .forms import PrescribeForm
+
 def prescribe_drug(request, drug_id):
-    drug = Drug.objects.get(pk=drug_id)
+    drug = get_object_or_404(Drug, pk=drug_id)
+    
     if request.method == 'POST':
-        quantity = request.POST['quantity']
-        Prescription.objects.create(drug=drug, quantity=quantity)
-        drug.quantity -= int(quantity)
-        drug.save()
-    return render(request, 'hospital/prescribe.html', {'drug': drug})
+        form = PrescribeForm(request.POST)
+        if form.is_valid():
+            quantity = form.cleaned_data['quantity']
+            patient = form.cleaned_data['patients']
+            
+            Prescription.objects.create(drug=drug, quantity=quantity, patient=patient)
+            drug.quantity -= int(quantity)
+            drug.save()
+    else:
+        form = PrescribeForm()
+
+    return render(request, 'hospital/prescribe.html', {'drug': drug, 'form': form})
 
 def restock_drug(request, drug_id):
     drug = Drug.objects.get(pk=drug_id)
