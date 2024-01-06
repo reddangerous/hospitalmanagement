@@ -167,6 +167,7 @@ def generate_report(request, drug_id):
     context = {
         'drug': drug,
         'prescribed_quantity': prescribed_quantity,
+        'prescribed_price': prescribed_quantity * drug.price_per_unit,
         'patients_prescribed_to': patients_prescribed_to,
         'dates_prescribed': dates_prescribed,
     }

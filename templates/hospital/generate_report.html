@@ -44,8 +44,15 @@
                         <p class="text-left"><strong>Price per Unit:</strong> {{ drug.price_per_unit }} KSHs</p>
                         <p class="text-left"><strong>Total Price:</strong> {{ drug.total_price }} KSHs</p>
                         <p class="text-left"><strong>Prescribed Quantity: </strong> {{ prescribed_quantity|default_if_none:"0" }}</p>
+                        <p class="text-left"><strong>Prescribed Price: </strong> {{ prescribed_price|default_if_none:"0" }} KSHs</p>
                         <p class="text-left"><strong>Patients Prescribed to : </strong> {{ patients_prescribed_to }}</p>
-                        <p class="text-left"><strong>Prescription Dates : </strong> {{ dates_prescribed }}</p>
+                        <!-- Assuming 'dates_prescribed' is a list of datetime objects -->
+<p class="text-left"><strong>Prescription Dates:</strong>
+    {% for date in dates_prescribed %}
+        {{ date|date:"D jS M Y" }}{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+</p>
+
                         <p class="text-right" id = 'styled-text'><strong>Total Price:</strong> {{ drug.total_price }} KSHs</p>
                         <!-- Actions Dropdown -->
                         <div class="dropdown mt-3">
