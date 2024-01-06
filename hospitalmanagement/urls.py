@@ -127,7 +127,7 @@ urlpatterns += [
     path('download-pdf/<int:drug_id>/', views.download_pdf, name='download_pdf'),
     path('download-excel/<int:drug_id>/', views.download_excel, name='download_excel'),
     path('search/', views.search_drugs, name='search_drugs'),
-    
+    path('delete_drug/<int:drug_id>/', views.delete_drug, name='delete_drug'),
     # Add other URL patterns for new views
 ]
 #Developed By : sumit kumar

@@ -1,0 +1,38 @@
+{% extends 'hospital/admin_base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" integrity="sha384-1CmrxMRARb6aLqgBO7yyAxjtN4Df6pD0sAKsH4BiU7P7y7EnqJ3JFbHs5tZeIjz" crossorigin="anonymous">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+{% block content %}
+<div class="container">
+    <h1 class="mt-4 mb-4">Delete Drug</h1>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Are you sure you want to delete "{{ drug.name }}"?</h5>
+            <p class="card-text text-left">This action cannot be undone.</p>
+
+            <!-- Delete Button -->
+            <form method="post" action="{% url 'delete_drug' drug.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger mt-5">Delete</button>
+                <a href="{% url 'inventory' %}" class="btn btn-secondary mt-5">Cancel</a>
+            </form>
+          
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
