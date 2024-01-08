@@ -87,7 +87,7 @@ class Drug(models.Model):
     date_received = models.DateField()
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, null=True)
     description = models.TextField()
-    image= models.ImageField(upload_to='profile_pic/PatientProfilePic/',null=True,blank=True)
+    image= models.ImageField(upload_to='profile_pic/drugs/',null=True,blank=True)
     def total_price(self):
         return self.quantity * self.price_per_unit
 
@@ -146,7 +146,19 @@ def update_activity(sender, instance, created, **kwargs):
             total_value=instance.total_price(),
             
         )
+class Medication(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    prescription = models.OneToOneField(Prescription, on_delete=models.CASCADE)
+    date_dispensed = models.DateField()
+    quantity_dispensed = models.PositiveIntegerField()
+    price_per_unit = models.DecimalField(max_digits=10, decimal_places=2)
 
+    @property
+    def total_price(self):
+        return self.quantity_dispensed * self.price_per_unit
+
+    def __str__(self):
+        return f'{self.patient} - {self.prescription} - {self.date_dispensed}'
 
 #Developed By : sumit kumar
 #facebook : fb.com/sumit.luv

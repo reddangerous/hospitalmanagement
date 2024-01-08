@@ -129,6 +129,10 @@ urlpatterns += [
     path('search/', views.search_drugs, name='search_drugs'),
     path('delete_drug/<int:drug_id>/', views.delete_drug, name='delete_drug'),
     path('drug/<int:drug_id>/edit/', views.edit_drug, name='edit_drug'),
+    path('pharmacy/', views.pharmacy_view, name='pharmacy'),
+    path('prescribed-medications/', views.prescribed_medications, name='prescribed_medications'),
+    path('dispense-medication/', views.dispense_medication, name='dispense_medication'),
+    path('prescription-management/', views.prescription_management, name='prescription_management'),
   
 ]
 #Developed By : sumit kumar

@@ -1,9 +1,17 @@
 from django import forms
 from django.contrib.auth.models import User
 from . import models
-from .models import Drug, Supplier
+from .models import Drug, Supplier, Prescription, Medication
 
+class MedicationDispenseForm(forms.ModelForm):
+    class Meta:
+        model = Medication
+        fields = ['patient', 'prescription', 'date_dispensed', 'quantity_dispensed', 'price_per_unit']
 
+class PrescriptionManagementForm(forms.ModelForm):
+    class Meta:
+        model = Prescription
+        fields = ['patient', 'quantity']
 #for admin signup
 class AdminSigupForm(forms.ModelForm):
     class Meta:

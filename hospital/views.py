@@ -13,8 +13,49 @@ from .forms import DrugForm
 from tablib import Dataset
 from .models import Drug
 from weasyprint import HTML
+from .models import Medication
+from .forms import MedicationDispenseForm, PrescriptionManagementForm
+
+def dispense_medication(request):
+    if request.method == 'POST':
+        form = MedicationDispenseForm(request.POST)
+        if form.is_valid():
+            medication = form.save(commit=False)
+            # Update inventory quantity
+            drug = medication.drug
+            drug.quantity -= medication.prescribed_quantity
+            drug.save()
+
+            medication.save()
+            return redirect('prescribed_medications')
+    else:
+        form = MedicationDispenseForm()
+    return render(request, 'hospital/dispense_medication.html', {'form': form})
+
+def prescribed_medications(request):
+    medications = Medication.objects.all()
+    return render(request, 'hospital/prescribed_medications.html', {'medications': medications})
+
+def prescription_management(request):
+    if request.method == 'POST':
+        form = PrescriptionManagementForm(request.POST)
+        if form.is_valid():
+            medication = form.save(commit=False)
+            # Create or update prescriptions in the Inventory
+            drug = medication.drug
+            drug.prescription_quantity += medication.prescribed_quantity
+            drug.save()
+
+            medication.save()
+            return redirect('prescribed_medications')
+    else:
+        form = PrescriptionManagementForm()
+    return render(request, 'hospital/prescription_management.html', {'form': form})
 
 
+def pharmacy_view(request):
+    drugs = Drug.objects.all()
+    return render(request, 'hospital/pharmacy.html', {'drugs': drugs})
 
 def search_drugs(request):
     query = request.GET.get('q', '')
