@@ -6,7 +6,10 @@ from .models import Drug, Supplier, Prescription, Medication
 class MedicationDispenseForm(forms.ModelForm):
     class Meta:
         model = Medication
-        fields = ['patient', 'prescription', 'date_dispensed', 'quantity_dispensed', 'price_per_unit']
+        fields = ['patient', 'date_dispensed','drug', 'quantity_dispensed', 'price_per_unit']
+        widgets = {
+           'date_dispensed': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+       }
 
 class PrescriptionManagementForm(forms.ModelForm):
     class Meta:
