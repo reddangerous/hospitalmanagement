@@ -9,7 +9,7 @@ from datetime import datetime,timedelta,date
 from django.conf import settings
 from django.db.models import Q
 from .models import Drug, Prescription, Activity, Patient
-from .forms import DrugForm
+from .forms import DrugForm, ReportCriteriaForm
 from tablib import Dataset
 from .models import Drug
 from weasyprint import HTML
@@ -93,6 +93,11 @@ def inventory(request):
    else:
        form = DrugForm()
    return render(request, 'hospital/inventory.html')
+
+def doctor_view_drugs(request):
+    drugs = Drug.objects.all()
+    return render(request, 'hospital/doctor_drugs.html', {'drugs': drugs})
+
 def add_inventory(request):
    drugs = Drug.objects.all()
    if request.method == 'POST':
@@ -196,24 +201,63 @@ def delete_drug(request, drug_id):
         return redirect('inventory')
 
     return render(request, 'hospital/delete_drug.html', {'drug': drug})
+
 def generate_report(request, drug_id):
     drug = get_object_or_404(Drug, pk=drug_id)
-    
-    prescribed_quantity = Prescription.objects.filter(drug=drug).aggregate(quantity=Sum('quantity'))['quantity'] or 0
 
-    prescriptions = Prescription.objects.filter(drug=drug).order_by('-date_prescribed')
-    patients_prescribed_to = [prescription.patient.get_name for prescription in prescriptions] or ["Not yet prescribed to anyone"]
-    dates_prescribed = [prescription.date_prescribed for prescription in prescriptions] or ["Not yet prescribed"]
+    if request.method == 'POST':
+        form = ReportCriteriaForm(request.POST)
+        if form.is_valid():
+            user = form.cleaned_data['patient']
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+
+            # Apply selected criteria
+            if user:
+                prescriptions = Prescription.objects.filter(
+                    drug=drug,
+                    patient=user,
+                    date_prescribed__range=(start_date, end_date)
+                ).order_by('-date_prescribed')
+            else:
+                prescriptions = Prescription.objects.filter(
+                    drug=drug,
+                    patient = user,
+                    date_prescribed__range=(start_date, end_date)
+                ).order_by('-date_prescribed')
+
+            # Get unique patient names and their count
+            patients_prescribed_to = [prescription.patient.get_name for prescription in prescriptions] or ["Not yet prescribed to anyone"]
+            patients_prescribed_count = len(patients_prescribed_to)
+
+            # Calculate prescribed quantity and price
+            prescribed_quantity = prescriptions.aggregate(quantity=Sum('quantity'))['quantity'] or 0
+            prescribed_price = prescribed_quantity * drug.price_per_unit
+        else:
+            # Handle form errors
+            patients_prescribed_to = []
+            patients_prescribed_count = 0
+            prescribed_quantity = 0
+            prescribed_price = 0
+    else:
+        # Initial load
+        form = ReportCriteriaForm()
+        patients_prescribed_to = []
+        patients_prescribed_count = 0
+        prescribed_quantity = 0
+        prescribed_price = 0
 
     context = {
         'drug': drug,
         'prescribed_quantity': prescribed_quantity,
-        'prescribed_price': prescribed_quantity * drug.price_per_unit,
+        'prescribed_price': prescribed_price,
         'patients_prescribed_to': patients_prescribed_to,
-        'dates_prescribed': dates_prescribed,
+        'patients_prescribed_count': patients_prescribed_count,
+        'form': form,
     }
 
     return render(request, 'hospital/generate_report.html', context)
+
 
 
 #view for reports dash
@@ -850,6 +894,7 @@ def search_view(request):
     patients=models.Patient.objects.all().filter(status=True,assignedDoctorId=request.user.id).filter(Q(symptoms__icontains=query)|Q(user__first_name__icontains=query))
     return render(request,'hospital/doctor_view_patient.html',{'patients':patients,'doctor':doctor})
 
+#now we need to enable doctor to prescribe the medication to a patient same way admin can prescribe them
 
 
 @login_required(login_url='doctorlogin')

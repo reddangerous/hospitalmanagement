@@ -114,6 +114,7 @@ urlpatterns +=[
 urlpatterns += [
     path('inventory/', views.inventory, name='inventory'),
     path('add_inventory/', views.add_inventory, name='add_inventory'),
+    path('doctor_drugs/', views.doctor_view_drugs, name='doctor_view_drugs'),
     path('drug/<int:drug_id>/', views.drug_details, name='drug_details'),
     path('drug/<int:drug_id>/edit/', views.edit_drug, name='edit_drug'),
     path('drug/<int:drug_id>/delete/', views.delete_drug, name='delete_drug'),

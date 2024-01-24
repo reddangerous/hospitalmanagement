@@ -96,6 +96,12 @@ class Prescription(models.Model):
     drug = models.ForeignKey(Drug, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     date_prescribed = models.DateTimeField(auto_now_add=True)
+    #defining a way to fetch patients name and adding it here
+    @property
+    def patient_name(self):
+        return self.patient.get_name
+  
+
 
 
 from django.db import models
@@ -153,22 +159,21 @@ class Medication(models.Model):
     date_dispensed = models.DateField()
     quantity_dispensed = models.PositiveIntegerField()
     drug = models.ForeignKey(Drug, on_delete=models.CASCADE)
+    price_per_unit = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    # def price_per_unit(self):
+    #     return self.drug.price_per_unit if self.drug else None
 
-    @property
-    def price_per_unit(self):
-        return self.drug.price_per_unit if self.drug else None
+    # @property
+    # def prescription_amount(self):
+    #     return self.price_per_unit * self.quantity_dispensed if self.price_per_unit else None
 
-    @property
-    def prescription_amount(self):
-        return self.price_per_unit * self.quantity_dispensed if self.price_per_unit else None
-
-    @property
-    def total_price(self):
-        return self.quantity_dispensed * self.price_per_unit if self.price_per_unit else None
+    # @property
+    # def total_price(self):
+    #     return self.quantity_dispensed * self.price_per_unit if self.price_per_unit else None
     
-    @property
-    def total_price_after_margin(self):
-        return self.quantity_dispensed * self.price_per_unit * 1.2 if self.price_per_unit else None
+    # @property
+    # def total_price_after_margin(self):
+    #     return self.quantity_dispensed * self.price_per_unit * 1.2 if self.price_per_unit else None
 #Developed By : sumit kumar
 #facebook : fb.com/sumit.luv
 #Youtube :youtube.com/lazycoders

@@ -31,29 +31,49 @@
     </head>
     <div class="modal-content">
         <div class="modal-body">
-           
-            
-
             <div class="container text-left">
-                    <div class="col  rounded p-4 " >
-                        <h1 class="text-center">{{ drug.name }} Inventory Report</h1>
-                        <p class="text-right"><strong>Date Received:</strong> {{ drug.date_received }}</p>
-                        <p class="text-left"><strong>Name:</strong> {{ drug.name }}</p>
-                        <p class="text-left"><strong>Description:</strong> {{ drug.description }}</p>
-                        <p class="text-left"><strong>Quantity:</strong> {{ drug.quantity }}</p>
-                        <p class="text-left"><strong>Price per Unit:</strong> {{ drug.price_per_unit }} KSHs</p>
-                        <p class="text-left"><strong>Total Price:</strong> {{ drug.total_price }} KSHs</p>
-                        <p class="text-left"><strong>Prescribed Quantity: </strong> {{ prescribed_quantity|default_if_none:"0" }}</p>
-                        <p class="text-left"><strong>Prescribed Price: </strong> {{ prescribed_price|default_if_none:"0" }} KSHs</p>
-                        <p class="text-left"><strong>Patients Prescribed to : </strong> {{ patients_prescribed_to }}</p>
-                        <!-- Assuming 'dates_prescribed' is a list of datetime objects -->
-<p class="text-left"><strong>Prescription Dates:</strong>
-    {% for date in dates_prescribed %}
-        {{ date|date:"D jS M Y" }}{% if not forloop.last %}, {% endif %}
-    {% endfor %}
-</p>
+                <div class="col rounded p-4">
+                    <!-- Include the form for selecting criteria -->
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="{{ form.user.id_for_label }}">Select User:</label>
+                            {{ form.patient }}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.start_date.id_for_label }}">Start Date:</label>
+                            {{ form.start_date }}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.end_date.id_for_label }}">End Date:</label>
+                            {{ form.end_date }}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Generate Report</button>
+                    </form>
+    
+                   <!-- Display the rest of the drug information and actions dropdown as before -->
+                   <h1 class="text-center">{{ drug.name }} Inventory Report</h1>
+                   <p class="text-right"><strong>Date Received:</strong> {{ drug.date_received }}</p>
+                   <p class="text-left"><strong>Name:</strong> {{ drug.name }}</p>
+                   <p class="text-left"><strong>Description:</strong> {{ drug.description }}</p>
+                   <p class="text-left"><strong>Quantity:</strong> {{ drug.quantity }}</p>
+                   <p class="text-left"><strong>Price per Unit:</strong> {{ drug.price_per_unit }} KSHs</p>
+                   <p class="text-left"><strong>Total Price:</strong> {{ drug.total_price }} KSHs</p>
+                   <p class="text-left"><strong>Prescribed Quantity:</strong> {{ prescribed_quantity|default_if_none:"0" }}</p>
+                   <p class="text-left"><strong>Prescribed Price:</strong> {{ prescribed_price|default_if_none:"0" }} KSHs</p>
+                   <p>{{patients_prescribed_to}}</p>
+                   <p class="text-left"><strong>Patients Prescribed to:</strong>
+                    {% for patient_name in patients_prescribed_to %}
+                        {{ patient_name }}
+                        {% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                    {% if patients_prescribed_count == 0 %}
+                        Not yet prescribed to anyone
+                    {% endif %}
+                </p>
+                   <p class="text-right" id='styled-text'><strong>Total Price:</strong> {{ drug.total_price }} KSHs</p>
+                   
 
-                        <p class="text-right" id = 'styled-text'><strong>Total Price:</strong> {{ drug.total_price }} KSHs</p>
                         <!-- Actions Dropdown -->
                         <div class="dropdown mt-3">
                             <button class="btn btn-success dropdown-toggle" type="button" id="actionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

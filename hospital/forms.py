@@ -1,8 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 from . import models
-from .models import Drug, Supplier, Prescription, Medication
-
+from .models import Drug, Patient, Supplier, Prescription, Medication
+from django.contrib.auth.models import User
 class MedicationDispenseForm(forms.ModelForm):
     class Meta:
         model = Medication
@@ -10,6 +10,17 @@ class MedicationDispenseForm(forms.ModelForm):
         widgets = {
            'date_dispensed': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
        }
+class ReportCriteriaForm(forms.ModelForm):
+    
+    class Meta:
+        model = Prescription
+        fields = ['patient']
+    patient = forms.ModelChoiceField(queryset=models.Patient.objects.all().filter(status=True),empty_label="Patient prescribed to ", to_field_name="user_id")
+    start_date = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+                                 required=False, label='From')
+    
+    end_date = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+                               required=False, label='To')
 
 class PrescriptionManagementForm(forms.ModelForm):
     class Meta:
