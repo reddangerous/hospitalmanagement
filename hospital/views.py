@@ -974,42 +974,26 @@ from datetime import datetime
 
 def patient_book_appointment_view(request):
     appointmentForm=forms.PatientAppointmentForm()
-    patient=models.Patient.objects.get(user_id=request.user.id)
+    patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
     message=None
-    errorMessage = None
-    mydict={'appointmentForm':appointmentForm,'patient':patient,'message':message, 'errorMessage': errorMessage}
-    
+    mydict={'appointmentForm':appointmentForm,'patient':patient,'message':message}
     if request.method=='POST':
         appointmentForm=forms.PatientAppointmentForm(request.POST)
         if appointmentForm.is_valid():
             print(request.POST.get('doctorId'))
             desc=request.POST.get('description')
+
             doctor=models.Doctor.objects.get(user_id=request.POST.get('doctorId'))
             
-            # Check if the doctor is available for appointments
-            doctorAvailability = doctor.availableForAppointment
-            if not doctorAvailability:
-                errorMessage = "Try another time later, the doctor is not available for appointments."
-                mydict['errorMessage'] = errorMessage
-                return render(request,'hospital/patient_book_appointment.html',context=mydict)
-
-            # Check if the selected date is today or in the future
-            selected_date = request.POST.get('appointmentDate')
-            if datetime.strptime(selected_date, '%Y-%m-%d').date() < datetime.today().date():
-                errorMessage = "You cannot book an appointment for a past date."
-                mydict['errorMessage'] = errorMessage
-                return render(request,'hospital/patient_book_appointment.html',context=mydict)
-
             appointment=appointmentForm.save(commit=False)
             appointment.doctorId=request.POST.get('doctorId')
-            appointment.patientId=request.user.id
+            appointment.patientId=request.user.id #----user can choose any patient but only their info will be stored
             appointment.doctorName=models.User.objects.get(id=request.POST.get('doctorId')).first_name
-            appointment.patientName=request.user.first_name
+            appointment.patientName=request.user.first_name #----user can choose any patient but only their info will be stored
             appointment.status=False
             appointment.save()
-            return HttpResponseRedirect('patient-view-appointment')
+        return HttpResponseRedirect('patient-view-appointment')
     return render(request,'hospital/patient_book_appointment.html',context=mydict)
-
 
 
 

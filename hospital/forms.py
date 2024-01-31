@@ -90,27 +90,14 @@ class AppointmentForm(forms.ModelForm):
     patientId=forms.ModelChoiceField(queryset=models.Patient.objects.all().filter(status=True),empty_label="Patient Name and Symptoms", to_field_name="user_id")
     class Meta:
         model=models.Appointment
-        fields=['description','status', 'appointmentDate', 'appointmentTime']
+        fields=['description','status']
 
-        widgets = {
-           'appointmentDate': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-           'appointmentTime': forms.TimeInput(attrs={'class': 'form-control', 'type' : 'time'})
-       }
-
-
-from datetime import datetime
 
 class PatientAppointmentForm(forms.ModelForm):
     doctorId=forms.ModelChoiceField(queryset=models.Doctor.objects.all().filter(status=True),empty_label="Doctor Name and Department", to_field_name="user_id")
-
     class Meta:
         model=models.Appointment
-        fields=['description','status', 'appointmentDate', 'appointmentTime']
-
-        widgets = {
-           'appointmentDate': forms.DateInput(attrs={'class': 'form-control', 'type': 'date', 'min': datetime.now().strftime('%Y-%m-%d')}),
-           'appointmentTime': forms.TimeInput(attrs={'class': 'form-control', 'type' : 'time', 'min': datetime.now().strftime('%H:%M')})
-       }
+        fields=['description','status']
 #for contact us page
 class ContactusForm(forms.Form):
     Name = forms.CharField(max_length=30)
