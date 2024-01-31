@@ -64,10 +64,7 @@
                       <div class="form-content">
                           <div class="form-group">
                               {% render_field form.name class="form-control" placeholder="Drug Name" %}
-                          </div>
-                          <div class="form-group"> Add image(not required)
-                            {% render_field form.image class="form-control" placeholder="Drug image" %}
-                        </div>
+                            </div>
                           <div class="form-group">
                             {% render_field form.quantity class="form-control" placeholder="Quantity" %}
                         </div>
@@ -78,7 +75,7 @@
                             {% render_field form.date_received class="form-control" placeholder="Date received" %}
                         </div>
                         <div class="form-group">
-                            {% render_field form.new_supplier_name class="form-control" placeholder="Supplier(optional)" %}
+                            {% render_field form.supplier class="form-control" placeholder="Supplier" %}
                         </div>
                           <div class="form-group">
                               {% render_field form.description class="form-control" placeholder="Description" %}
@@ -95,7 +92,9 @@
       </div>
   
       <div class="col-md-6">
+        <div class="note">
           <h1>Inventory details</h1>
+        </div>
           <table class="table">
               <thead>
                   <tr>

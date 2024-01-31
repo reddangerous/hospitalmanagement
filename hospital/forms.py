@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from . import models
-from .models import Drug, Patient, Supplier, Prescription, Medication
+from .models import Drug, Patient, Prescription, Medication
 from django.contrib.auth.models import User
 class MedicationDispenseForm(forms.ModelForm):
     class Meta:
@@ -41,27 +41,14 @@ class PrescribeForm(forms.ModelForm):
         fields=['quantity']
 
 class DrugForm(forms.ModelForm):
-   new_supplier_name = forms.CharField(max_length=255, required=False, label='New Supplier Name')
 
    class Meta:
        model = Drug
-       fields = ['name', 'quantity', 'price_per_unit', 'date_received', 'description', 'image']
+       fields = ['name', 'quantity', 'price_per_unit', 'date_received', 'description', 'supplier']
        widgets = {
            'date_received': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
        }
 
-   def save(self, commit=True):
-       new_supplier_name = self.cleaned_data.get('new_supplier_name')
-
-       # If a new_supplier_name is provided, create a new supplier
-       if new_supplier_name:
-           supplier, created = Supplier.objects.get_or_create(name=new_supplier_name)
-           self.instance.supplier = supplier
-       else:
-           # If no new_supplier_name, set supplier to None
-           self.instance.supplier = None
-
-       return super().save(commit)
 
 
 #for student related form
@@ -103,16 +90,27 @@ class AppointmentForm(forms.ModelForm):
     patientId=forms.ModelChoiceField(queryset=models.Patient.objects.all().filter(status=True),empty_label="Patient Name and Symptoms", to_field_name="user_id")
     class Meta:
         model=models.Appointment
-        fields=['description','status']
+        fields=['description','status', 'appointmentDate', 'appointmentTime']
 
+        widgets = {
+           'appointmentDate': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+           'appointmentTime': forms.TimeInput(attrs={'class': 'form-control', 'type' : 'time'})
+       }
+
+
+from datetime import datetime
 
 class PatientAppointmentForm(forms.ModelForm):
     doctorId=forms.ModelChoiceField(queryset=models.Doctor.objects.all().filter(status=True),empty_label="Doctor Name and Department", to_field_name="user_id")
+
     class Meta:
         model=models.Appointment
-        fields=['description','status']
+        fields=['description','status', 'appointmentDate', 'appointmentTime']
 
-
+        widgets = {
+           'appointmentDate': forms.DateInput(attrs={'class': 'form-control', 'type': 'date', 'min': datetime.now().strftime('%Y-%m-%d')}),
+           'appointmentTime': forms.TimeInput(attrs={'class': 'form-control', 'type' : 'time', 'min': datetime.now().strftime('%H:%M')})
+       }
 #for contact us page
 class ContactusForm(forms.Form):
     Name = forms.CharField(max_length=30)

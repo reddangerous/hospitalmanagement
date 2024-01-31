@@ -1,38 +1,4 @@
-<!-- hospital/pdf_report_template.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style media="screen">
-        /* Add your existing styles here */
-        .container {
-            border-radius: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: 0.4s;
-            border: 2px solid #5bc995;
-        }
-
-        #styled-text {
-            border-bottom: 2px solid #5bc995;
-            border-top: 1px solid #5bc995;
-            border-left: 1px solid #5bc995;
-            border-right: 1px solid #5bc995;
-            display: flex;
-            flex-direction: row;
-            justify-content: flex-end;
-            align-items: right;
-            text-align: right;
-            padding: 5px;
-        }
-    </style>
-    <title>{{ drug.name }} Report</title>
-</head>
-<body>
-    <div class="container text-left">
-        <div class="col rounded p-4">
-            <h1 class="text-center">{{ drug.name }} Inventory Report</h1>
+{% comment %} <h1 class="text-center">{{ drug.name }} Inventory Report</h1>
             <p class="text-right"><strong>Date Received:</strong> {{ drug.date_received }}</p>
             <p class="text-left"><strong>Name:</strong> {{ drug.name }}</p>
             <p class="text-left"><strong>Description:</strong> {{ drug.description }}</p>
@@ -42,8 +8,184 @@
             <p class="text-left"><strong>Prescribed Quantity: </strong> {{ prescribed_quantity|default_if_none:"0" }}</p>
             <p class="text-left"><strong>Patients Prescribed to : </strong> {{ patients_prescribed_to }}</p>
             <p class="text-left"><strong>Prescription Dates : </strong> {{ dates_prescribed }}</p>
-            <p class="text-right" id="styled-text"><strong>Total Price:</strong> {{ drug.total_price }} KSHs</p>
-        </div>
-    </div>
-</body>
-</html>
+            <p class="text-right" id="styled-text"><strong>Total Price:</strong> {{ drug.total_price }} KSHs</p> {% endcomment %}
+            <!DOCTYPE html>
+            <html lang="en" dir="ltr">
+            
+            
+            <head>
+              <meta charset="utf-8">
+              <style>
+                @page {
+                  size: A4;
+                  margin: 1cm;
+            
+                  @frame footer {
+                    -pdf-frame-content: footerContent;
+                    bottom: 0cm;
+                    margin-left: 9cm;
+                    margin-right: 9cm;
+                    height: 1cm;
+                  }
+                }
+            
+                .invoice-box {
+                  max-width: 800px;
+                  margin: auto;
+                  padding: 30px;
+                  border: 1px solid #eee;
+                  box-shadow: 0 0 10px rgba(0, 0, 0, .15);
+                  font-size: 16px;
+                  line-height: 24px;
+                  font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+                  color: #555;
+                }
+            
+                .invoice-box table {
+                  width: 100%;
+                  line-height: inherit;
+                  text-align: left;
+                }
+            
+                .invoice-box table td {
+                  padding: 5px;
+                  vertical-align: top;
+                }
+            
+                .invoice-box table tr td:nth-child(2) {
+                  text-align: right;
+                }
+            
+                .invoice-box table tr.top table td {
+                  padding-bottom: 20px;
+                }
+            
+                .invoice-box table tr.top table td.title {
+                  font-size: 45px;
+                  line-height: 45px;
+                  color: #333;
+                }
+            
+                .invoice-box table tr.information table td {
+                  padding-bottom: 40px;
+                }
+            
+                .invoice-box table tr.heading td {
+                  background: #eee;
+                  border-bottom: 1px solid #ddd;
+                  font-weight: bold;
+                }
+            
+                .invoice-box table tr.details td {
+                  padding-bottom: 20px;
+                }
+            
+                .invoice-box table tr.item td {
+                  border-bottom: 1px solid #eee;
+                }
+            
+                .invoice-box table tr.item.last td {
+                  border-bottom: none;
+                }
+            
+                .invoice-box table tr.total td:nth-child(2) {
+                  border-top: 2px solid #eee;
+                  font-weight: bold;
+                }
+            
+                @media only screen and (max-width: 600px) {
+                  .invoice-box table tr.top table td {
+                    width: 100%;
+                    display: block;
+                    text-align: center;
+                  }
+            
+                  .invoice-box table tr.information table td {
+                    width: 100%;
+                    display: block;
+                    text-align: center;
+                  }
+                }
+            
+                /** RTL **/
+                .rtl {
+                  direction: rtl;
+                  font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+                }
+            
+                .rtl table {
+                  text-align: right;
+                }
+            
+                .rtl table tr td:nth-child(2) {
+                  text-align: left;
+                }
+              </style>
+            </head>
+            
+            <body>
+            
+              <br><br><br>
+              <div class="invoice-box">
+                <table cellpadding="0" cellspacing="0">
+                  <tr class="top">
+                    <td colspan="2">
+                      <table>
+                        <tr>
+                          <td class="title">
+                            <h5>{{ drug.name }} Inventory Report</h5>
+                          </td>
+            
+                          <td>
+                            <Strong>
+                            Recieved Date: {{drug.date_received }}<br>
+                            Drug Quantity: {{ drug.quantity }}<br>
+                            Total Price :{{ drug.total_price }} KSHs<br>
+                            </strong>
+                            <hr />
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+            
+                  <tr class="information">
+                    <td colspan="2">
+                      <table>
+                        <tr>
+                          <td>
+                            Drug  Name : {{drug.name}}<br>
+                            Supplier : {{drug.supplier}}<br>
+                            Price per unit: {{ drug.price_per_unit }}
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+            
+            
+                  <tr class="information">
+                    <td colspan="2">
+                      <table>
+                        <tr>
+                          <td>
+                            Description  :<br>
+                            &nbsp &nbsp &nbsp &nbsp &nbsp {{drug.description}}
+                          </td>
+            
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+            
+            
+            
+
+            
+                </table>
+              </div>
+            </body>
+            
+            
+            </html>
+            

@@ -205,47 +205,19 @@ def delete_drug(request, drug_id):
 def generate_report(request, drug_id):
     drug = get_object_or_404(Drug, pk=drug_id)
 
-    if request.method == 'POST':
-        form = ReportCriteriaForm(request.POST)
-        if form.is_valid():
-            user = form.cleaned_data['patient']
-            start_date = form.cleaned_data['start_date']
-            end_date = form.cleaned_data['end_date']
+    # Get all prescriptions for the drug
+    prescriptions = Prescription.objects.filter(drug=drug).order_by('-date_prescribed')
 
-            # Apply selected criteria
-            if user:
-                prescriptions = Prescription.objects.filter(
-                    drug=drug,
-                    patient=user,
-                    date_prescribed__range=(start_date, end_date)
-                ).order_by('-date_prescribed')
-            else:
-                prescriptions = Prescription.objects.filter(
-                    drug=drug,
-                    patient = user,
-                    date_prescribed__range=(start_date, end_date)
-                ).order_by('-date_prescribed')
+    # Get unique patient names and their count
+    patients_prescribed_to = list(set([prescription.patient.get_name for prescription in prescriptions])) or ["Not yet prescribed to anyone"]
+    patients_prescribed_count = len(patients_prescribed_to)
 
-            # Get unique patient names and their count
-            patients_prescribed_to = [prescription.patient.get_name for prescription in prescriptions] or ["Not yet prescribed to anyone"]
-            patients_prescribed_count = len(patients_prescribed_to)
+    # Get the latest prescription date
+    latest_prescription_date = prescriptions.first().date_prescribed if prescriptions else None
 
-            # Calculate prescribed quantity and price
-            prescribed_quantity = prescriptions.aggregate(quantity=Sum('quantity'))['quantity'] or 0
-            prescribed_price = prescribed_quantity * drug.price_per_unit
-        else:
-            # Handle form errors
-            patients_prescribed_to = []
-            patients_prescribed_count = 0
-            prescribed_quantity = 0
-            prescribed_price = 0
-    else:
-        # Initial load
-        form = ReportCriteriaForm()
-        patients_prescribed_to = []
-        patients_prescribed_count = 0
-        prescribed_quantity = 0
-        prescribed_price = 0
+    # Calculate prescribed quantity and price
+    prescribed_quantity = prescriptions.aggregate(quantity=Sum('quantity'))['quantity'] or 0
+    prescribed_price = prescribed_quantity * drug.price_per_unit
 
     context = {
         'drug': drug,
@@ -253,7 +225,7 @@ def generate_report(request, drug_id):
         'prescribed_price': prescribed_price,
         'patients_prescribed_to': patients_prescribed_to,
         'patients_prescribed_count': patients_prescribed_count,
-        'form': form,
+        'latest_prescription_date': latest_prescription_date,
     }
 
     return render(request, 'hospital/generate_report.html', context)
@@ -994,32 +966,50 @@ def patient_appointment_view(request):
     patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
     return render(request,'hospital/patient_appointment.html',{'patient':patient})
 
+from datetime import datetime
 
 
 @login_required(login_url='patientlogin')
 @user_passes_test(is_patient)
+
 def patient_book_appointment_view(request):
     appointmentForm=forms.PatientAppointmentForm()
-    patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
+    patient=models.Patient.objects.get(user_id=request.user.id)
     message=None
-    mydict={'appointmentForm':appointmentForm,'patient':patient,'message':message}
+    errorMessage = None
+    mydict={'appointmentForm':appointmentForm,'patient':patient,'message':message, 'errorMessage': errorMessage}
+    
     if request.method=='POST':
         appointmentForm=forms.PatientAppointmentForm(request.POST)
         if appointmentForm.is_valid():
             print(request.POST.get('doctorId'))
             desc=request.POST.get('description')
-
             doctor=models.Doctor.objects.get(user_id=request.POST.get('doctorId'))
             
+            # Check if the doctor is available for appointments
+            doctorAvailability = doctor.availableForAppointment
+            if not doctorAvailability:
+                errorMessage = "Try another time later, the doctor is not available for appointments."
+                mydict['errorMessage'] = errorMessage
+                return render(request,'hospital/patient_book_appointment.html',context=mydict)
+
+            # Check if the selected date is today or in the future
+            selected_date = request.POST.get('appointmentDate')
+            if datetime.strptime(selected_date, '%Y-%m-%d').date() < datetime.today().date():
+                errorMessage = "You cannot book an appointment for a past date."
+                mydict['errorMessage'] = errorMessage
+                return render(request,'hospital/patient_book_appointment.html',context=mydict)
+
             appointment=appointmentForm.save(commit=False)
             appointment.doctorId=request.POST.get('doctorId')
-            appointment.patientId=request.user.id #----user can choose any patient but only their info will be stored
+            appointment.patientId=request.user.id
             appointment.doctorName=models.User.objects.get(id=request.POST.get('doctorId')).first_name
-            appointment.patientName=request.user.first_name #----user can choose any patient but only their info will be stored
+            appointment.patientName=request.user.first_name
             appointment.status=False
             appointment.save()
-        return HttpResponseRedirect('patient-view-appointment')
+            return HttpResponseRedirect('patient-view-appointment')
     return render(request,'hospital/patient_book_appointment.html',context=mydict)
+
 
 
 

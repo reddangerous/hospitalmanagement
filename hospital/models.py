@@ -17,6 +17,7 @@ class Doctor(models.Model):
     mobile = models.CharField(max_length=20,null=True)
     department= models.CharField(max_length=50,choices=departments,default='Cardiologist')
     status=models.BooleanField(default=False)
+    availableForAppointment = models.BooleanField(default=True)
     @property
     def get_name(self):
         return self.user.first_name+" "+self.user.last_name
@@ -52,7 +53,8 @@ class Appointment(models.Model):
     doctorId=models.PositiveIntegerField(null=True)
     patientName=models.CharField(max_length=40,null=True)
     doctorName=models.CharField(max_length=40,null=True)
-    appointmentDate=models.DateField(auto_now=True)
+    appointmentDate=models.DateField()
+    appointmentTime = models.TimeField()
     description=models.TextField(max_length=500)
     status=models.BooleanField(default=False)
 
@@ -75,19 +77,15 @@ class PatientDischargeDetails(models.Model):
     doctorFee=models.PositiveIntegerField(null=False)
     OtherCharge=models.PositiveIntegerField(null=False)
     total=models.PositiveIntegerField(null=False)
-class Supplier(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255)
-    # Add other fields for supplier details
+
 
 class Drug(models.Model):
     name = models.CharField(max_length=255)
     quantity = models.PositiveIntegerField()
     price_per_unit = models.DecimalField(max_digits=10, decimal_places=2)
     date_received = models.DateField()
-    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, null=True)
+    supplier = models.CharField(max_length=255)
     description = models.TextField()
-    image= models.ImageField(upload_to='profile_pic/drugs/',null=True,blank=True)
     def total_price(self):
         return self.quantity * self.price_per_unit
 
