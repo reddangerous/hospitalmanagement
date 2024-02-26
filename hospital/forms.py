@@ -3,13 +3,38 @@ from django.contrib.auth.models import User
 from . import models
 from .models import Drug, Patient, Prescription, Medication
 from django.contrib.auth.models import User
+# hospital/forms.py
+
+from django import forms
+from .models import Prescription, Drug
+
 class MedicationDispenseForm(forms.ModelForm):
+    prescription_quantity = forms.IntegerField(label='Prescription Quantity')
+    drug_name = forms.CharField(label='Drug Name')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.is_bound and self.data.get('patients'):
+            patient_id = self.data.get('patients')
+            prescription = Prescription.objects.filter(patient_id=patient_id).first()
+            if prescription:
+                self.fields['prescription_quantity'].initial = prescription.quantity
+                self.fields['drug_name'].initial = prescription.drug.name
+
     class Meta:
         model = Medication
-        fields = ['patient', 'date_dispensed','drug', 'quantity_dispensed', 'price_per_unit']
+        fields = ['date_dispensed']
         widgets = {
-           'date_dispensed': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-       }
+            'date_dispensed': forms.DateInput(attrs={  'type': 'date'}),
+        }
+
+class PatientSelectionForm(forms.Form):
+    patients = forms.ModelChoiceField(queryset=Patient.objects.all(), empty_label="select patient to  dispense to", to_field_name="user_id")
+    class Meta:
+        model = Patient
+        fields = ['patients']
+
+
 class ReportCriteriaForm(forms.ModelForm):
     
     class Meta:

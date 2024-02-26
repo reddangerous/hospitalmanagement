@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group
 from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required,user_passes_test
-from datetime import datetime,timedelta,date
+from datetime import datetime,timedelta,date, timezone
 from django.conf import settings
 from django.db.models import Q
 from .models import Drug, Prescription, Activity, Patient
@@ -14,23 +14,67 @@ from tablib import Dataset
 from .models import Drug
 from weasyprint import HTML
 from .models import Medication
-from .forms import MedicationDispenseForm, PrescriptionManagementForm
+from .forms import MedicationDispenseForm, PrescriptionManagementForm, PatientSelectionForm
+from django.http import JsonResponse
 
-def dispense_medication(request):
+def dispense_medication(request, patient_id):
+    patient = get_object_or_404(Patient, id=patient_id)
     if request.method == 'POST':
         form = MedicationDispenseForm(request.POST)
         if form.is_valid():
             medication = form.save(commit=False)
-            # Update inventory quantity
             drug = medication.drug
-            drug.quantity -= medication.prescribed_quantity
+            drug.quantity -= medication.prescription_quantity
             drug.save()
-
             medication.save()
             return redirect('prescribed_medications')
     else:
-        form = MedicationDispenseForm()
+        # Pre-populate the form with the patient's prescription data
+        prescription = Prescription.objects.filter(patient=patient).first()
+        if prescription:
+            form = MedicationDispenseForm(initial={
+                'prescription_quantity': prescription.quantity,
+                'drug_name': prescription.drug.name,
+            })
+        else:
+            form = MedicationDispenseForm()
+    
     return render(request, 'hospital/dispense_medication.html', {'form': form})
+
+def select_patient(request):
+    if request.method == 'POST':
+        form = PatientSelectionForm(request.POST)
+        if form.is_valid():
+            patient_id = form.cleaned_data['patients'].id
+            return redirect('dispense_medication', patient_id=patient_id)
+    else:
+        form = PatientSelectionForm()
+    return render(request, 'hospital/select_patient.html', {'form': form})
+    
+def get_prescription_data(request, patient_id):
+    prescription = Prescription.objects.filter(patient_id=patient_id).first()
+    if prescription:
+        data = {
+            'prescription_quantity': prescription.quantity,
+            'drug_name': prescription.drug.name,
+        }
+        return JsonResponse(data)
+    else:
+        return JsonResponse({'error': 'No prescription found for this patient.'}, status=400)
+def fetch_prescription_details(request):
+    if request.method == 'GET' and request.is_ajax():
+        patient_id = request.GET.get('patient_id')
+        prescription = Prescription.objects.filter(patient_id=patient_id).first()
+        if prescription:
+            data = {
+                'prescription_quantity': prescription.quantity,
+                'drug_name': prescription.drug.name
+            }
+        else:
+            data = {}
+        return JsonResponse(data)
+    return JsonResponse({'error': 'Invalid request'})
+
 
 def prescribed_medications(request):
     medications = Medication.objects.all()

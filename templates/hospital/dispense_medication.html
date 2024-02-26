@@ -3,10 +3,35 @@
 {% block content %}
   <div class="container">
     <h1>Dispense Medication</h1>
-    <form method="post">
+    <form method="post" class="form-group" style="border:  2px solid gold; padding:  20px; border-radius:  10px;">
       {% csrf_token %}
       {{ form.as_p }}
       <button type="submit" class="btn btn-primary">Dispense Medication</button>
     </form>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        var patientId = "{{ patient_id }}";
+        if (patientId) {
+          $.ajax({
+            url: '{% url "get_prescription_data" %}',
+            type: 'POST',
+            data: {
+                patient_id: patientId,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(response) {
+              if (response.error) {
+                alert(response.error);
+              } else {
+                $('#id_prescription_quantity').val(response.prescription_quantity);
+                $('#id_drug_name').val(response.drug_name);
+              }
+            }
+          });
+        }
+      });
+    </script>
+    
   </div>
 {% endblock %}

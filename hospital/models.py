@@ -87,6 +87,7 @@ class Drug(models.Model):
     description = models.TextField()
     def total_price(self):
         return self.quantity * self.price_per_unit
+   
 
 class Prescription(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
@@ -97,6 +98,9 @@ class Prescription(models.Model):
     @property
     def patient_name(self):
         return self.patient.get_name
+    @property
+    def drug_name(self):
+        return self.drug.name
   
 
 
@@ -152,25 +156,31 @@ def update_activity(sender, instance, created, **kwargs):
 from django.db import models
 
 class Medication(models.Model):
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    prescription = models.ForeignKey(Prescription, on_delete=models.CASCADE)
     date_dispensed = models.DateField()
-    quantity_dispensed = models.PositiveIntegerField()
     drug = models.ForeignKey(Drug, on_delete=models.CASCADE)
-    price_per_unit = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    # def price_per_unit(self):
-    #     return self.drug.price_per_unit if self.drug else None
-
-    # @property
-    # def prescription_amount(self):
-    #     return self.price_per_unit * self.quantity_dispensed if self.price_per_unit else None
-
-    # @property
-    # def total_price(self):
-    #     return self.quantity_dispensed * self.price_per_unit if self.price_per_unit else None
     
-    # @property
-    # def total_price_after_margin(self):
-    #     return self.quantity_dispensed * self.price_per_unit * 1.2 if self.price_per_unit else None
+    @property
+    def quantity_dispensed(self):
+        return self.prescription.quantity
+    
+    @property
+    def price_per_unit(self):
+        return self.drug.price_per_unit
+
+    @property
+    def prescription_amount(self):
+        return self.price_per_unit * self.quantity_dispensed
+
+    @property
+    def total_price(self):
+        return self.quantity_dispensed * self.price_per_unit
+       
+    @property
+    def total_price_after_margin(self):
+        return self.quantity_dispensed * self.price_per_unit *  1.2
+        
+
 #Developed By : sumit kumar
 #facebook : fb.com/sumit.luv
 #Youtube :youtube.com/lazycoders

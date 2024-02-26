@@ -105,6 +105,7 @@
                       <th>Price per Unit</th>
                       <th>Total Price</th>
                         <th>Supplier</th>
+                        
                   </tr>
               </thead>
               <tbody>
@@ -124,7 +125,9 @@
                           <td>{{ drug.price_per_unit }} KSHs</td>
                           <td>{{ drug.total_price }} KSHs</td>
                           <td >{{drug.supplier}}</td>
+                          
                       </tr>
+  
                   {% endfor %}
               </tbody>
           </table>

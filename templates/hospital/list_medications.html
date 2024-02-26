@@ -1,0 +1,39 @@
+{% extends "hospital/admin_base.html" %}
+
+{% block content %}
+  <h1>Medication List</h1>
+  {% if medications %}
+    <table>
+      <thead>
+        <tr>
+          <th>Prescription</th>
+          <th>Date Dispensed</th>
+          <th>Drug</th>
+          <th>Quantity Dispensed</th>
+          <th>Price Per Unit</th>
+          <th>Total Price</th>
+          <th>Total Price After Margin</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for medication in medications %}
+          <tr>
+            <td>{{ medication.prescription.id }}</td>
+            <td>{{ medication.date_dispensed }}</td>
+            <td>{{ medication.drug.name }}</td>
+            <td>{{ medication.quantity_dispensed }}</td>
+            <td>{{ medication.price_per_unit }}</td>
+            <td>{{ medication.total_price }}</td>
+            <td>{{ medication.total_price_after_margin }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="7">No medications found.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>There are no medications in the system.</p>
+  {% endif %}
+{% endblock %}
