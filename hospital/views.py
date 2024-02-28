@@ -735,6 +735,7 @@ def discharge_patient_view(request,pk):
     days=(date.today()-patient.admitDate) #2 days, 0:00:00
     assignedDoctor=models.User.objects.all().filter(id=patient.assignedDoctorId)
     d=days.days # only how many day that is 2
+    medications=models.Medication.objects.all().filter(prescription__patient=patient)
     total_price_after_margin = sum(medication.total_price_after_margin for medication in medications)
     patientDict={
         'patientId':pk,
