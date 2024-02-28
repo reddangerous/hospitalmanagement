@@ -16,30 +16,42 @@ from weasyprint import HTML
 from .models import Medication
 from .forms import MedicationDispenseForm, PrescriptionManagementForm, PatientSelectionForm
 from django.http import JsonResponse
-
+from django.db.models import Prefetch
+from django.db.models.functions import Concat
+from django.db.models import F, Value, CharField
 def dispense_medication(request, patient_id):
     patient = get_object_or_404(Patient, id=patient_id)
     if request.method == 'POST':
         form = MedicationDispenseForm(request.POST)
         if form.is_valid():
             medication = form.save(commit=False)
-            drug = medication.drug
-            drug.quantity -= medication.prescription_quantity
-            drug.save()
+            # The drug field is automatically handled by the form
+            medication.drug_id = form.cleaned_data['drug_id']
+            medication.prescription_id = form.cleaned_data['prescription_id']
             medication.save()
-            return redirect('prescribed_medications')
+            return redirect('dispensed_medications')
     else:
-        # Pre-populate the form with the patient's prescription data
         prescription = Prescription.objects.filter(patient=patient).first()
         if prescription:
             form = MedicationDispenseForm(initial={
                 'prescription_quantity': prescription.quantity,
+                'drug_id': prescription.drug.id,
                 'drug_name': prescription.drug.name,
+                'prescription_id': prescription.id,
+                  # Pass the drug ID as initial data
             })
         else:
             form = MedicationDispenseForm()
     
     return render(request, 'hospital/dispense_medication.html', {'form': form})
+
+def dispensed_medications(request):
+    medications = Medication.objects.annotate(
+        patient_name=Concat(F('prescription__patient__user__first_name'), Value(' '), F('prescription__patient__user__last_name')),
+    ).prefetch_related(
+        Prefetch('prescription', queryset=Prescription.objects.select_related('patient'))
+    ).all()
+    return render(request, 'hospital/dispensed_medications.html', {'medications': medications})
 
 def select_patient(request):
     if request.method == 'POST':

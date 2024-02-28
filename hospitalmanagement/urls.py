@@ -133,9 +133,10 @@ urlpatterns += [
     path('pharmacy/', views.pharmacy_view, name='pharmacy'),
     path('prescribed-medications/', views.prescribed_medications, name='prescribed_medications'),
     path('dispense_medication/<int:patient_id>/', views.dispense_medication, name='dispense_medication'),
-     path('get_prescription_data/', views.get_prescription_data, name='get_prescription_data'),
+    path('get_prescription_data/', views.get_prescription_data, name='get_prescription_data'),
     path('select-patient/', views.select_patient, name='select_patient'),
     path('prescription-management/', views.prescription_management, name='prescription_management'),
+    path('dispensed-medications/', views.dispensed_medications, name='dispensed_medications'),
 ]
 #Developed By : sumit kumar
 #facebook : fb.com/sumit.luv

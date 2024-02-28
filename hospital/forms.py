@@ -11,7 +11,8 @@ from .models import Prescription, Drug
 class MedicationDispenseForm(forms.ModelForm):
     prescription_quantity = forms.IntegerField(label='Prescription Quantity')
     drug_name = forms.CharField(label='Drug Name')
-
+    drug_id = forms.IntegerField(label='Drug Id', widget=forms.HiddenInput())  # Assuming Drug is the model for drugs
+    prescription_id = forms.IntegerField(label='Prescription Id', widget=forms.HiddenInput())
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.is_bound and self.data.get('patients'):
@@ -20,13 +21,18 @@ class MedicationDispenseForm(forms.ModelForm):
             if prescription:
                 self.fields['prescription_quantity'].initial = prescription.quantity
                 self.fields['drug_name'].initial = prescription.drug.name
+                self.fields['drug_id'].initial = prescription.drug.id
+                self.fields['prescription_id'].initial = prescription.id
 
     class Meta:
         model = Medication
-        fields = ['date_dispensed']
+        fields = ['date_dispensed', 'drug_id', 'prescription_id']  # Include the drug field here
         widgets = {
-            'date_dispensed': forms.DateInput(attrs={  'type': 'date'}),
+            'date_dispensed': forms.DateInput(attrs={'type': 'date'}),
+            'drug_id': forms.HiddenInput(),
+            'prescription_id': forms.HiddenInput()
         }
+
 
 class PatientSelectionForm(forms.Form):
     patients = forms.ModelChoiceField(queryset=Patient.objects.all(), empty_label="select patient to  dispense to", to_field_name="user_id")
