@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.shortcuts import render,redirect,reverse, get_object_or_404
 from . import forms,models
 from django.db.models import Sum, Avg
@@ -734,6 +735,7 @@ def discharge_patient_view(request,pk):
     days=(date.today()-patient.admitDate) #2 days, 0:00:00
     assignedDoctor=models.User.objects.all().filter(id=patient.assignedDoctorId)
     d=days.days # only how many day that is 2
+    total_price_after_margin = sum(medication.total_price_after_margin for medication in medications)
     patientDict={
         'patientId':pk,
         'name':patient.get_name,
@@ -744,14 +746,25 @@ def discharge_patient_view(request,pk):
         'todayDate':date.today(),
         'day':d,
         'assignedDoctorName':assignedDoctor[0].first_name,
+        'total_price_after_margin': total_price_after_margin,  
     }
     if request.method == 'POST':
+        total_price_after_margin = sum(medication.total_price_after_margin for medication in medications)
+        room_charge = int(request.POST['roomCharge']) * int(d)
+        doctor_fee = int(request.POST['doctorFee'])
+        
+        other_charge = int(request.POST['OtherCharge'])
+        
+        # Calculate total price including total_price_after_margin
+        
+
+        total = room_charge + doctor_fee + other_charge + total_price_after_margin
         feeDict ={
-            'roomCharge':int(request.POST['roomCharge'])*int(d),
-            'doctorFee':request.POST['doctorFee'],
-            'medicineCost' : request.POST['medicineCost'],
-            'OtherCharge' : request.POST['OtherCharge'],
-            'total':(int(request.POST['roomCharge'])*int(d))+int(request.POST['doctorFee'])+int(request.POST['medicineCost'])+int(request.POST['OtherCharge'])
+            'roomCharge':room_charge,
+            'doctorFee':doctor_fee,
+            'medicineCost' : total_price_after_margin,
+            'OtherCharge' : other_charge,
+            'total':total,
         }
         patientDict.update(feeDict)
         #for updating to database patientDischargeDetails (pDD)
@@ -762,14 +775,15 @@ def discharge_patient_view(request,pk):
         pDD.address=patient.address
         pDD.mobile=patient.mobile
         pDD.symptoms=patient.symptoms
+        
         pDD.admitDate=patient.admitDate
         pDD.releaseDate=date.today()
         pDD.daySpent=int(d)
-        pDD.medicineCost=int(request.POST['medicineCost'])
         pDD.roomCharge=int(request.POST['roomCharge'])*int(d)
         pDD.doctorFee=int(request.POST['doctorFee'])
         pDD.OtherCharge=int(request.POST['OtherCharge'])
-        pDD.total=(int(request.POST['roomCharge'])*int(d))+int(request.POST['doctorFee'])+int(request.POST['medicineCost'])+int(request.POST['OtherCharge'])
+        pDD.medicineCost=total_price_after_margin
+        pDD.total=(int(request.POST['roomCharge'])*int(d))+int(request.POST['doctorFee'])+int(request.POST['OtherCharge'])+total_price_after_margin
         pDD.save()
         return render(request,'hospital/patient_final_bill.html',context=patientDict)
     return render(request,'hospital/patient_generate_bill.html',context=patientDict)

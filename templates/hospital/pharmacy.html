@@ -80,7 +80,7 @@
     <h1> Pharmacy Dashboard</h1>
 <div class="row">
      <!-- Dashboard Card -->
-     <div class="col-md-6">
+     <div class="col-md-12">
       <div class="card" id='dashboard'>
         <div class="card-body" id='dashboard'>
           <span><svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="#337AB7" class="bi bi-speedometer" viewBox="0 0 16 16">
@@ -109,52 +109,27 @@
           </div>
       </div>
   </div>
-     
-  <!-- Add Inventory Card -->
-  
-</div>
-
- <div class="row">
-
-
-
-  <!-- Search Card -->
-  <div class="col-md-6" id="search">
+  <div class="col-md-6">
     <div class="card">
         <div class="card-body">
             <span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="#FC8213" class="bi bi-search"
+                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="#337AB7" class="bi bi-file-earmark-text"
                     viewBox="0 0 16 16">
                     <path
-                        d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                        d="M4 0.5A0.5 0.5 0 0 1 4.5 0h7a0.5 0.5 0 0 1 0.354 0.146l3.5 3.5A0.5 0.5 0 0 1 16 4v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2z" />
+                    <path
+                        d="M10 2h2a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h1z" />
                 </svg>
             </span>
-            <h3 class="card-title">Search</h3>
-            <p class="card-text">Search for drugs in the pharmacy.</p>
-            <a href="{% url 'search_drugs' %}" class="btn btn-success">Go to Search</a>
+            <h3 class="card-title">Dispensed Medications</h3>
+            <p class="card-text">View Dispensed medications.</p>
+            <a href="{% url 'dispensed_medications' %}" class="btn btn-success">Go to Prescribed Medications</a>
         </div>
     </div>
-</div>
-<div class="col-md-6">
-  <div class="card">
-      <div class="card-body">
-          <span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="#337AB7" class="bi bi-file-earmark-text"
-                  viewBox="0 0 16 16">
-                  <path
-                      d="M4 0.5A0.5 0.5 0 0 1 4.5 0h7a0.5 0.5 0 0 1 0.354 0.146l3.5 3.5A0.5 0.5 0 0 1 16 4v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2z" />
-                  <path
-                      d="M10 2h2a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h1z" />
-              </svg>
-          </span>
-          <h3 class="card-title">Dispensed Medications</h3>
-          <p class="card-text">View Dispensed medications.</p>
-          <a href="{% url 'dispensed_medications' %}" class="btn btn-success">Go to Prescribed Medications</a>
-      </div>
   </div>
-</div>
-
-</div>
+     
+  <!-- Add Inventory Card -->
+  
 </div>
 </div>
 
