@@ -124,6 +124,7 @@ urlpatterns += [
     path('fetch_drug_details/', views.fetch_drug_details, name='fetch_drug_details'),
     path('download_report/<int:drug_id>/', views.download_report, name='download_report'),
     path('inventory-dashboard/', views.inventory_dashboard, name='inventory_dashboard'),
+    path('pharmacy-dashboard/', views.pharmacy_dashboard, name='pharmacy_dashboard'),
     path('reports-home/', views.reports_home, name='reports_home'),
     path('download-pdf/<int:drug_id>/', views.download_pdf, name='download_pdf'),
     path('download-excel/<int:drug_id>/', views.download_excel, name='download_excel'),

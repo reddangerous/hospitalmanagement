@@ -1,8 +1,15 @@
 {% extends 'hospital/admin_base.html' %}
 {% load static %}
 {% block content %}
+
+<br><br><br>
 <div class="container">
-    <h2>Dispensed Medications</h2>
+    <div class="row">
+        <div class="panel panel-primary col-md-10" style="margin-left:2%;">
+          <div class="panel-heading" style="text-align:center; background-color: #3B71CA">
+            <h2 >Dispensed Medications</h2>
+          </div>
+    
     <table class="table table-hover">
         <thead>
             <tr>
@@ -29,6 +36,8 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
+</div>
 </div>
 
 {% endblock %}

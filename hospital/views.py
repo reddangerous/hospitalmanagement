@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect,reverse, get_object_or_404
 from . import forms,models
-from django.db.models import Sum
+from django.db.models import Sum, Avg
 from django.contrib.auth.models import Group
 from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
@@ -205,6 +205,27 @@ def inventory_dashboard(request):
     return render(request, 'hospital/inventory_dasboard.html', context)
 
 
+from django.db.models import F, Sum
+
+
+def pharmacy_dashboard(request):
+    medications = Medication.objects.all()
+    
+    # Calculate total quantity and sum of total_price_after_margin
+    total_quantity = sum(medication.quantity_dispensed for medication in medications)
+    total_price_after_margin = sum(medication.total_price_after_margin for medication in medications)
+
+    # Count of medications
+    medication_count = medications.count()
+    total_price_after_margin_formatted = '{:.2f}'.format(total_price_after_margin)
+
+    return render(request, 'hospital/pharmacy_dashboard.html', {
+        'medications': medications,
+        'medication_count': medication_count,
+        'total_quantity': total_quantity,
+        'total_price_after_margin': total_price_after_margin_formatted
+    })
+
 from .models import Drug, Prescription
 from .forms import PrescribeForm
 
@@ -220,6 +241,7 @@ def prescribe_drug(request, drug_id):
             Prescription.objects.create(drug=drug, quantity=quantity, patient=patient)
             drug.quantity -= int(quantity)
             drug.save()
+            return redirect('add_inventory')
     else:
         form = PrescribeForm()
 

@@ -177,7 +177,8 @@ class Medication(models.Model):
         # Assuming the margin is a fixed percentage (e.g., 20% for a 20% margin)
         margin_percentage = Decimal('0.20')  # Change this value based on your actual margin
         total_price = self.total_price
-        return total_price * (1 + margin_percentage)
+        total_price_after_margin=total_price * (1 + margin_percentage)
+        return total_price_after_margin
         
 from decimal import Decimal
 #Developed By : sumit kumar

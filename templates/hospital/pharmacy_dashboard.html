@@ -1,0 +1,110 @@
+{% extends 'hospital/admin_base.html' %}
+
+{% block content %}
+{%load static%}
+
+<head>
+  <style media="screen">
+    /* Add your existing styles here */
+
+    .dashboard-summary {
+      margin-bottom: 20px;
+    }
+
+    .activity-card {
+      border-radius: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .activity-card img {
+      width: 100%;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+    }
+
+    .activity-card-body {
+      padding: 15px;
+      text-align: center; /* Center content */
+    }
+
+    .card-icon {
+      font-size: 2rem; /* Increase icon size */
+    }
+  </style>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.17.0/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Add your existing head content here -->
+</head>
+
+<div class="container"> <!-- Center content -->
+    <h1 class="mt-4 mb-4 text-center">Pharmacy Summary</h1> <!-- Added Inventory Summary heading -->
+<!-- Inventory Summary Section -->
+<div class="row mb-5">
+  <div class="container">
+    <div class="row ">
+      <div class="col-md-10"> <!-- Adjust the column size based on your preference -->
+        <div class="card">
+          <div class="card-body activity-card-body">
+            <span class="isvg loaded Isvg__FlexIsvg-sc-9bejjn-0 ui__Icon-sc-1xz1fqe-1 erbBAi jPZsgy">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40">
+                <g fill="none" fill-rule="evenodd">
+                  <rect width="40" height="40" fill="#FDE3D6" rx="20"></rect>
+                  <path fill="#F36E2D" fill-rule="nonzero" d="M12.8 13a.79.79 0 0 0-.8.78v7.78c0 .43.36.77.8.77h14.4a.79.79 0 0 0 .8-.77v-7.78a.79.79 0 0 0-.8-.78H12.8zm1.53 1.56h11.34c.12.33.39.59.73.7v4.8c-.34.13-.60.39-.73.72H14.33a1.18 1.18 0 0 0-.73-.71v-4.8c.34-.12.60-.38.73-.71zm5.67.77a2.37 2.37 0 0 0-2.4 2.34c0 1.28 1.07 2.33 2.4 2.33s2.4-1.04 2.4-2.33a2.37 2.37 0 0 0-2.4-2.34zm-4 1.56c-.44 0-.8.35-.8.78 0 .43.36.77.8.77.44 0 .8-.34.8-.77a.79.79 0 0 0-.8-.78zm8 0c-.44 0-.8.35-.8.78 0 .43.36.77.8.77.44 0 .8-.34.8-.77a.79.79 0 0 0-.8-.78zM12 23.1v1.56h16V23.1H12zm0 2.33V27h16v-1.56H12z"></path>
+                </g>
+              </svg>
+            </span>
+            <h3 class="card-title">{{ total_price_after_margin }} KES</h3>
+            <p class="card-text">Total Value</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+</div>
+<div class="row dashboard-summary ml-5">
+
+  
+  <!-- Total Items -->
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body activity-card-body">
+        <span class="isvg loaded Isvg__FlexIsvg-sc-9bejjn-0 ui__Icon-sc-1xz1fqe-1 erbBAi jPZsgy"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40">
+            <g fill="none" fill-rule="evenodd">
+                <rect width="40" height="40" fill="#C8E6EE" rx="20"></rect>
+                <path fill="#0096BC" fill-rule="nonzero" d="M22.13 12h-6.5c-.9 0-1.63.72-1.63 1.6v12.8c0 .88.73 1.6 1.63 1.6h9.74c.9 0 1.63-.72 1.63-1.6v-9.6L22.12 12zm1.62 12.8h-6.5v-1.6h6.5v1.6zm0-3.2h-6.5V20h6.5v1.6zm-2.44-4v-4.4l4.47 4.4h-4.47z"></path>
+            </g>
+        </svg>
+        </span>
+        <h5 class="card-title"> {{ medication_count }}</h5>
+        <p class="card-text">Number of medications</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Total Quantity -->
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body activity-card-body">
+        <span class="isvg loaded Isvg__FlexIsvg-sc-9bejjn-0 ui__Icon-sc-1xz1fqe-1 erbBAi jPZsgy"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40">
+            <g fill="none" fill-rule="evenodd">
+                <rect width="40" height="40" fill="#EDDBFE" rx="20"></rect>
+                <path fill="#A245F6" fill-rule="nonzero" d="M20 12.73l-8 3.46v1.21l8 3.47 8-3.47v-1.2l-8-3.47zm8 6.38l-1.6.7-6.4 2.77-8-3.46v1.73l8 3.47 8-3.47v-1.74zm0 3.52l-1.6.69-6.4 2.77-8-3.46v1.74l8 3.47 8-3.47v-1.74z"></path>
+            </g>
+        </svg>
+        </span>
+        <h5 class="card-title"> {{ total_quantity }}</h5>
+        <p class="card-text">Quantity</p>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- Total Value -->
+  
+
+
+
+</div>
+{% endblock content %}
