@@ -1,12 +1,18 @@
 from django import forms
 from django.contrib.auth.models import User
 from . import models
-from .models import Drug, Patient, Prescription, Medication
+from .models import Drug, Patient, Prescription, Medication, Expense
 from django.contrib.auth.models import User
 # hospital/forms.py
 
 from django import forms
 from .models import Prescription, Drug
+
+#finance management
+class ExpenseForm(forms.ModelForm):
+    class Meta:
+        model = Expense
+        fields = ['category', 'amount', 'description']
 
 class MedicationDispenseForm(forms.ModelForm):
     prescription_quantity = forms.IntegerField(label='Prescription Quantity')

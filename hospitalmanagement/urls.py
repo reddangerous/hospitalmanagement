@@ -138,6 +138,12 @@ urlpatterns += [
     path('select-patient/', views.select_patient, name='select_patient'),
     path('prescription-management/', views.prescription_management, name='prescription_management'),
     path('dispensed-medications/', views.dispensed_medications, name='dispensed_medications'),
+
+    #Finance'''
+    path('finance/', views.financial_management_dashboard, name='finance'),
+    path('sales/', views.sales, name='sales'),
+    path('expenses/', views.expenses, name='expenses'),
+    path('financial-reports/', views.financial_report, name='financial_reports'),
 ]
 #Developed By : sumit kumar
 #facebook : fb.com/sumit.luv

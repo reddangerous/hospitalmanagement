@@ -1,0 +1,26 @@
+{% extends 'hospital/admin_base.html' %}
+{% block content %}
+<div class="container">
+    <h2>Sales Transactions</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Drug Name</th>
+                <th>Quantity</th>
+                <th>Date Dispensed</th>
+                <th>Total Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for medication in medications %}
+            <tr>
+                <td>{{ medication.drug.name }}</td>
+                <td>{{ medication.quantity_dispensed }}</td>
+                <td>{{ medication.date_dispensed }}</td>
+                <td>{{ medication.total_price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

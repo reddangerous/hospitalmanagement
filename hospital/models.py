@@ -10,6 +10,29 @@ departments=[('Cardiologist','Cardiologist'),
 ('Anesthesiologists','Anesthesiologists'),
 ('Colon and Rectal Surgeons','Colon and Rectal Surgeons')
 ]
+
+
+#Finance Department
+
+
+class Expense(models.Model):
+    EXPENSE_CATEGORIES = [
+        ('salaries', 'Salaries'),
+        ('rent', 'Rent'),
+        ('stationery', 'Stationery'),
+        ('transport', 'Transport'),
+        ('utilities', 'Utilities'),
+        ('others', 'Others'),
+    ]
+
+    category = models.CharField(max_length=20, choices=EXPENSE_CATEGORIES)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    date = models.DateField(auto_now_add=True)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.category} - {self.amount}"
+
 class Doctor(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     profile_pic= models.ImageField(upload_to='profile_pic/DoctorProfilePic/',null=True,blank=True)

@@ -9,8 +9,8 @@ from django.contrib.auth.decorators import login_required,user_passes_test
 from datetime import datetime,timedelta,date, timezone
 from django.conf import settings
 from django.db.models import Q
-from .models import Drug, Prescription, Activity, Patient
-from .forms import DrugForm, ReportCriteriaForm
+from .models import Drug, Expense, Prescription, Activity, Patient
+from .forms import DrugForm, ExpenseForm, ReportCriteriaForm
 from tablib import Dataset
 from .models import Drug
 from weasyprint import HTML
@@ -20,6 +20,49 @@ from django.http import JsonResponse
 from django.db.models import Prefetch
 from django.db.models.functions import Concat
 from django.db.models import F, Value, CharField
+
+#Finance
+def financial_management_dashboard(request):
+    return render(request, 'hospital/finance.html')
+
+def sales(request):
+    medications = Medication.objects.all()
+    return render(request, 'hospital/sales.html', {'medications': medications})
+
+def expenses(request):
+    expenses = Expense.objects.all()
+    if request.method == 'POST':
+        form = ExpenseForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('expenses') # Redirect to the expenses list view
+    else:
+        form = ExpenseForm()
+    return render(request, 'hospital/expenses.html', {'form': form ,'expenses': expenses})
+
+from django.shortcuts import render
+from .models import Expense, PatientDischargeDetails
+
+def financial_report(request):
+    # Calculate total expenses
+    total_expenses = sum(expense.amount for expense in Expense.objects.all())
+    
+    # Calculate total income using iteration
+    total_income = sum(details.total for details in PatientDischargeDetails.objects.all())
+    
+    # Calculate profit
+    profit = total_income - total_expenses
+    
+    context = {
+        'total_expenses': total_expenses,
+        'total_income': total_income,
+        'profit': profit,
+    }
+    return render(request, 'hospital/financial_report.html', context)
+
+
+#Finance
+
 def dispense_medication(request, patient_id):
     patient = get_object_or_404(Patient, id=patient_id)
     if request.method == 'POST':
