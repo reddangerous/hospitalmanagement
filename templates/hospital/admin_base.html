@@ -318,11 +318,19 @@
         <a href="/admin-dashboard" class="navbar-brand">HOSPITAL MANAGEMENT</a>
         <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
           <span class="navbar-toggler-icon"></span>
-        </button>
+        </button >
         <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
           <div class="navbar-nav" style=" margin-left: 90%;">
 
-            <a href="/logout" class="nav-item nav-link">Logout</a>
+            {% if user.is_authenticated %}
+              <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="nav-item nav-link">Log Out</button>
+              </form>
+              {% else %}
+              <p>You are not logged in</p>
+              <a href="{% url 'login' %}" class="nav-item nav-link">Log In</a>
+              {% endif %}
           </div>
         </div>
       </nav>
