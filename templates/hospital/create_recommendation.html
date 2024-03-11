@@ -1,0 +1,14 @@
+{% extends "hospital/doctor_base.html" %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+<h2>Create Recommendation for {{ patient.get_name }}</h2>
+<form method="post" class="form-content">
+    {% csrf_token %}
+    <div class="form-group">
+        {% render_field form.doctor_recommendation class="form-control" placeholder="Write your recommendation here" %}
+    </div>
+    <button type="submit" class="btn btn-primary">Submit Recommendation</button>
+</form>
+{% endblock %}

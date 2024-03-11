@@ -10,7 +10,7 @@ from datetime import datetime,timedelta,date, timezone
 from django.conf import settings
 from django.db.models import Q
 from .models import Drug, Expense, Prescription, Activity, Patient
-from .forms import DrugForm, ExpenseForm, ReportCriteriaForm
+from .forms import DrugForm, ExpenseForm, RecommendationForm, ReportCriteriaForm
 from tablib import Dataset
 from .models import Drug
 from weasyprint import HTML
@@ -20,6 +20,25 @@ from django.http import JsonResponse
 from django.db.models import Prefetch
 from django.db.models.functions import Concat
 from django.db.models import F, Value, CharField
+#recommendation
+def create_recommendation(request, patient_id):
+    patient = Patient.objects.get(id=patient_id)
+    if request.method == 'POST':
+        form = RecommendationForm(request.POST)
+        if form.is_valid():
+            recommendation = form.save(commit=False)
+            recommendation.patient = patient
+            recommendation.save()
+            return redirect('view_recommendations', patient_id=patient.id)
+    else:
+        form = RecommendationForm()
+    return render(request, 'hospital/create_recommendation.html', {'form': form, 'patient': patient})
+
+def view_recommendations(request, patient_id):
+    patient = Patient.objects.get(id=patient_id)
+    recommendations = patient.recommendations.all()
+    return render(request, 'hospital/view_recommendations.html', {'recommendations': recommendations, 'patient': patient})
+
 
 #Finance
 def financial_management_dashboard(request):

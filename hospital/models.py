@@ -32,6 +32,8 @@ class Expense(models.Model):
 
     def __str__(self):
         return f"{self.category} - {self.amount}"
+    
+
 
 class Doctor(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
@@ -201,6 +203,14 @@ class Medication(models.Model):
         return total_price_after_margin
         
 from decimal import Decimal
+
+class Recommendation(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='recommendations')
+    doctor_recommendation = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Recommendation for {self.patient.get_name}"
 #Developed By : sumit kumar
 #facebook : fb.com/sumit.luv
 #Youtube :youtube.com/lazycoders

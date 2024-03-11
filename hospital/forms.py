@@ -8,6 +8,13 @@ from django.contrib.auth.models import User
 from django import forms
 from .models import Prescription, Drug
 
+from .models import Recommendation
+
+class RecommendationForm(forms.ModelForm):
+    class Meta:
+        model = Recommendation
+        fields = ['doctor_recommendation']
+
 #finance management
 class ExpenseForm(forms.ModelForm):
     class Meta:

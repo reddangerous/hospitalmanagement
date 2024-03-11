@@ -48,6 +48,8 @@ facebook : fb.com/sumit.luv
           <th>Symptoms</th>
           <th>Mobile</th>
           <th>Address</th>
+          <th>Create Recommendation </th>
+          <th>view Recommendation </th>
 
         </tr>
       </thead>
@@ -58,6 +60,8 @@ facebook : fb.com/sumit.luv
         <td>{{p.symptoms}}</td>
         <td>{{p.mobile}}</td>
         <td>{{p.address}}</td>
+        <td><a href="/create_recommendation/{{p.id}}" class="btn btn-primary">Create Recommendation</a></td>
+        <td><a href="/view_recommendations/{{p.id}}" class="btn btn-primary">View Recommendation</a></td>
       </tr>
       {% endfor %}
     </table>

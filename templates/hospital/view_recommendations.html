@@ -1,0 +1,27 @@
+{% extends "hospital/doctor_base.html" %}
+
+{% block content %}
+<h2>Recommendations for {{ patient.get_name }}</h2>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Recommendation</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for recommendation in recommendations %}
+            <tr>
+                <td>{{ recommendation.doctor_recommendation }}</td>
+                <td>{{ recommendation.created_at }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2">No recommendations yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

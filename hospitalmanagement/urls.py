@@ -92,6 +92,8 @@ urlpatterns +=[
     path('doctor-view-appointment', views.doctor_view_appointment_view,name='doctor-view-appointment'),
     path('doctor-delete-appointment',views.doctor_delete_appointment_view,name='doctor-delete-appointment'),
     path('delete-appointment/<int:pk>', views.delete_appointment_view,name='delete-appointment'),
+    path('create_recommendation/<int:patient_id>/', views.create_recommendation, name='create_recommendation'),
+    path('view_recommendations/<int:patient_id>/', views.view_recommendations, name='view_recommendations'),
 ]
 
 
