@@ -62,21 +62,24 @@
                         <th>Name</th>
                         <th>Description</th>
                         <th>Quantity Remaining</th>
+                        <th>Prescribe</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for drug in drugs %}
                         <tr>
-  
-                              <td>
-                              <form class="drug-form" method="post" action="{% url 'fetch_drug_details' %}">
-                                  {% csrf_token %}
-                                  <input type="hidden" name="drug_id" value="{{ drug.id }}">
-                                  <button class="btn btn-info" type="submit">{{ drug.name }}</button>
-                              </form>
-                          </td>
+                          <td>{{ drug.name }}</td>
                             <td>{{ drug.description }}</td>
                             <td>{{ drug.quantity }}</td>
+                            <td>
+                              {% if drug.quantity == 0 %}
+                                  <span class="text-muted">Prescribe (Out of Stock)</span>
+                              {% else %}
+                                  <a href="{% url 'doctor_prescribe_drug' drug.id %}">Prescribe</a>
+                              {% endif %}
+                          </td>
+                          
+                           
                         </tr>
                     {% endfor %}
                 </tbody>

@@ -9,8 +9,8 @@ from django.contrib.auth.decorators import login_required,user_passes_test
 from datetime import datetime,timedelta,date, timezone
 from django.conf import settings
 from django.db.models import Q
-from .models import Drug, Expense, Prescription, Activity, Patient
-from .forms import DrugForm, ExpenseForm, RecommendationForm, ReportCriteriaForm
+from .models import Drug, Expense, PatientDischargeDetails, medicalRecords, Prescription, Activity, Patient, Recommendation
+from .forms import DrugForm, ExpenseForm, MedicalRecordForm, RecommendationForm, ReportCriteriaForm
 from tablib import Dataset
 from .models import Drug
 from weasyprint import HTML
@@ -34,10 +34,40 @@ def create_recommendation(request, patient_id):
         form = RecommendationForm()
     return render(request, 'hospital/create_recommendation.html', {'form': form, 'patient': patient})
 
+def add_medical_record(request, patient_id):
+    patient = get_object_or_404(Patient, id=patient_id)
+    if request.method == 'POST':
+        form = MedicalRecordForm(request.POST)
+        if form.is_valid():
+            medical_record = form.save(commit=False)
+            medical_record.patient = patient
+            medical_record.save()
+            return redirect('view_medical_records', patient_id=patient.id)
+    else:
+        form = MedicalRecordForm()
+    return render(request, 'hospital/add_medical_record.html', {'form': form, 'patient': patient})
+
+
+
+def view_medical_records(request, patient_id):
+    patient = get_object_or_404(Patient, id=patient_id)
+    medical_records = medicalRecords.objects.filter(patient=patient)
+    return render(request, 'hospital/view_medical_records.html', {'medical_records': medical_records, 'patient': patient})
+def patient_view_medical_records(request, patient_id):
+    patient = get_object_or_404(Patient, id=patient_id)
+    medical_records = medicalRecords.objects.filter(patient=patient)
+    patient_discharge_details = PatientDischargeDetails.objects.filter(id=patient_id).first()
+    recommendation = Recommendation.objects.filter(patient=patient_id)
+    return render(request, 'hospital/patient_view_medical_records.html', {'medical_records': medical_records, 'patient': patient, 'patient_discharge_details': patient_discharge_details, 
+                                                                          'recommendation': recommendation})
 def view_recommendations(request, patient_id):
     patient = Patient.objects.get(id=patient_id)
-    recommendations = patient.recommendations.all()
+    recommendations = Recommendation.objects.filter(patient=patient.id)
     return render(request, 'hospital/view_recommendations.html', {'recommendations': recommendations, 'patient': patient})
+def patient_view_recommendations(request, patient_id):
+    patient = Patient.objects.get(id=patient_id)
+    recommendations = Recommendation.objects.filter(patient=patient.id)
+    return render(request, 'hospital/patient_view_recommendations.html', {'recommendations': recommendations, 'patient': patient})
 
 
 #Finance
@@ -58,9 +88,13 @@ def expenses(request):
     else:
         form = ExpenseForm()
     return render(request, 'hospital/expenses.html', {'form': form ,'expenses': expenses})
+from django.db.models import Q, Sum
+from django.shortcuts import render
+from django.utils import timezone
+
 
 from django.shortcuts import render
-from .models import Expense, PatientDischargeDetails
+from .models import Expense, PatientDischargeDetails, Medication
 
 def financial_report(request):
     # Calculate total expenses
@@ -72,12 +106,25 @@ def financial_report(request):
     # Calculate profit
     profit = total_income - total_expenses
     
+    # Fetch expenses and sales data
+    expenses = Expense.objects.all()
+    medications = Medication.objects.all()
+    
+    # Date filter
+    date_filter = request.GET.get('date_filter')
+    if date_filter:
+        expenses = expenses.filter(date=date_filter)
+        medications = medications.filter(date_dispensed=date_filter)
+    
     context = {
         'total_expenses': total_expenses,
         'total_income': total_income,
         'profit': profit,
+        'expenses': expenses,
+        'medications': medications,
     }
     return render(request, 'hospital/financial_report.html', context)
+
 
 
 #Finance
@@ -309,6 +356,23 @@ def prescribe_drug(request, drug_id):
         form = PrescribeForm()
 
     return render(request, 'hospital/prescribe.html', {'drug': drug, 'form': form})
+def doctor_prescribe_drug(request, drug_id):
+    drug = get_object_or_404(Drug, pk=drug_id)
+    
+    if request.method == 'POST':
+        form = PrescribeForm(request.POST)
+        if form.is_valid():
+            quantity = form.cleaned_data['quantity']
+            patient = form.cleaned_data['patients']
+            
+            Prescription.objects.create(drug=drug, quantity=quantity, patient=patient)
+            drug.quantity -= int(quantity)
+            drug.save()
+            return redirect('doctor_view_drugs')
+    else:
+        form = PrescribeForm()
+
+    return render(request, 'hospital/doctor_prescribe.html', {'drug': drug, 'form': form})
 
 def restock_drug(request, drug_id):
     drug = Drug.objects.get(pk=drug_id)

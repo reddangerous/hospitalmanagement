@@ -1,0 +1,33 @@
+{% extends 'hospital/doctor_base.html' %}
+
+{% block content %}
+<h2 class='mt-5'>Medical Records for {{ patient.get_name }}</h2>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Medication Name</th>
+                <th>Dosage</th>
+                <th>Date Taken</th>
+                <th>Hospital Name</th>
+                <th>Recommendation</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in medical_records %}
+            <tr>
+                <td>{{ record.medication_name }}</td>
+                <td>{{ record.dosage }}</td>
+                <td>{{ record.date_created }}</td>
+                <td>{{ record.hospital_name }}</td>
+                <td>{{ record.get_reccomendation }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No medical records found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

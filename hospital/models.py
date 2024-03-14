@@ -211,6 +211,25 @@ class Recommendation(models.Model):
 
     def __str__(self):
         return f"Recommendation for {self.patient.get_name}"
-#Developed By : sumit kumar
-#facebook : fb.com/sumit.luv
-#Youtube :youtube.com/lazycoders
+    
+class medicalRecords(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='medical_records')
+    medication_name = models.CharField(max_length=100)
+    dosage = models.CharField(max_length=50, null=True)
+    date_created = models.DateField(auto_now_add=True)
+    hospital_name = models.CharField(max_length=100, null=True, blank=True)
+    recommendation = models.ForeignKey(Recommendation, on_delete=models.CASCADE, related_name='medical_records')
+
+    def __str__(self):
+        return f"{self.patient.get_name} - {self.medication_name} "
+    @property
+    def get_date_admitted(self):
+        return self.patient.admitDate
+    def get_reccomendation(self):
+        return self.recommendation.doctor_recommendation
+    def get_date_recommended(self):
+        return self.recommendation.created_at
+ 
+from django.db import models
+from django.contrib.auth.models import User
+

@@ -94,7 +94,8 @@ urlpatterns +=[
     path('delete-appointment/<int:pk>', views.delete_appointment_view,name='delete-appointment'),
     path('create_recommendation/<int:patient_id>/', views.create_recommendation, name='create_recommendation'),
     path('view_recommendations/<int:patient_id>/', views.view_recommendations, name='view_recommendations'),
-]
+    path('patient_view_recommendations/<int:patient_id>/', views.patient_view_recommendations, name='patient_view_recommendations'),
+]   
 
 
 
@@ -121,6 +122,7 @@ urlpatterns += [
     path('drug/<int:drug_id>/edit/', views.edit_drug, name='edit_drug'),
     path('drug/<int:drug_id>/delete/', views.delete_drug, name='delete_drug'),
     path('drug/<int:drug_id>/prescribe/', views.prescribe_drug, name='prescribe_drug'),
+    path('drug/<int:drug_id>/doctor_prescribe_drug/', views.doctor_prescribe_drug, name='doctor_prescribe_drug'),
     path('drug/<int:drug_id>/restock/', views.restock_drug, name='restock_drug'),
     path('drug/<int:drug_id>/generate_report/', views.generate_report, name='generate_report'),
     path('fetch_drug_details/', views.fetch_drug_details, name='fetch_drug_details'),
@@ -146,6 +148,9 @@ urlpatterns += [
     path('sales/', views.sales, name='sales'),
     path('expenses/', views.expenses, name='expenses'),
     path('financial-reports/', views.financial_report, name='financial_reports'),
+    path('add_medical_record/<int:patient_id>/', views.add_medical_record, name='add_medical_record'),
+    path('view_medical_records/<int:patient_id>/', views.view_medical_records, name='view_medical_records'),
+    path('patient_view_medical_records/<int:patient_id>/', views.patient_view_medical_records, name='view_medical_records'),
 ]
 #Developed By : sumit kumar
 #facebook : fb.com/sumit.luv

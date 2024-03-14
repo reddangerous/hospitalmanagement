@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from . import models
-from .models import Drug, Patient, Prescription, Medication, Expense
+from .models import Drug, medicalRecords, Patient, Prescription, Medication, Expense
 from django.contrib.auth.models import User
 # hospital/forms.py
 
@@ -9,7 +9,10 @@ from django import forms
 from .models import Prescription, Drug
 
 from .models import Recommendation
-
+class MedicalRecordForm(forms.ModelForm):
+    class Meta:
+        model = medicalRecords
+        fields = ['medication_name', 'dosage', 'hospital_name', 'recommendation']
 class RecommendationForm(forms.ModelForm):
     class Meta:
         model = Recommendation

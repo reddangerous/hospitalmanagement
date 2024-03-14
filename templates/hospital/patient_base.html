@@ -283,7 +283,7 @@
 <body>
   <!-- partial:index.partial.html -->
   <nav class="menu" tabindex="0">
-    <div class="smartphone-menu-trigger"></div>
+    <div class="smartphone-menu-trigger mt-5"></div>
     <header class="avatar">
       <img src="{% static patient.profile_pic.url %}" alt="Profile Pic" />
       <br><br>
@@ -296,6 +296,8 @@
       <li tabindex="0" class="icon-users"> <a style="color:white; text-decoration:none;" href="/patient-view-doctor"><span>Doctors</span></a></li>
       
       <li tabindex="0" class="icon-users"> <a style="color:white; text-decoration:none;" href="/patient-discharge"><span>Discharge</span></a></li>
+      <li tabindex="0" class="icon-users"> <a style="color:white; text-decoration:none;" href="/patient_view_medical_records/{{patient.id}}"><span>Medical Records</span></a></li>
+      <li tabindex="0" class="icon-users"> <a style="color:white; text-decoration:none;" href="/patient_view_recommendations/{{patient.id}}"><span>My Recommendations</span></a></li>
     </ul>
   </nav>
   <main>

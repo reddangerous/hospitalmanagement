@@ -1,0 +1,41 @@
+{% extends 'hospital/patient_base.html' %}
+
+{% block content %}
+<h2 class='mt-5'>Medical Records for {{ patient.get_name }}</h2>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Medication Name</th>
+                <th>Dosage</th>
+                <th>Date created</th>
+                <th>Hospital Name</th>
+                <th>Recommendation</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            <tr>
+                {% for record in medical_records %}
+                <td>{{ record.medication_name }}</td>
+                <td>{{ record.dosage }}</td>
+                <td>{{ record.date_created }}</td>
+                <td>{{ record.hospital_name }}</td>
+                <td> {{ record.recommendation.doctor_recommendation }} </td>
+                {% empty %}
+                <td colspan="5">No medical records found.</td>
+                {% endfor %}
+                {% comment %} <td> {{ recommendation.doctor_recommendation }} </td> {% endcomment %}
+
+
+            </tr>
+            
+            
+           
+        </tbody>
+    </table>
+    <a href="{% url 'add_medical_record' patient.id %}" class="btn btn-primary">Add Medical Record</a>
+</div>
+{% endblock %}
+
+

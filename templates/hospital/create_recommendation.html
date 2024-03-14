@@ -3,7 +3,7 @@
 {% load widget_tweaks %}
 
 {% block content %}
-<h2>Create Recommendation for {{ patient.get_name }}</h2>
+<h2 class='mt-5'>Create Recommendation for {{ patient.get_name }}</h2>
 <form method="post" class="form-content">
     {% csrf_token %}
     <div class="form-group">

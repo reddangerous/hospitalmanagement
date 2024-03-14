@@ -1,0 +1,45 @@
+{% extends 'hospital/doctor_base.html' %}
+
+{% block title %}
+    Prescribe {{ drug.name }}
+{% endblock %}
+
+{% include "hospital/navbar.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+    <h1 class='mt-5'>Prescribe {{ drug.name }}</h1>
+    <form method="POST" style='width:50%;'>
+        {% csrf_token %}
+        <div class="form-group">
+            {% load widget_tweaks %}
+
+            {% render_field form.quantity class="form-control mt-2" id="quantity-field" placeholder="Quantity to prescribe" %}
+            <div id="quantity-error" class="text-danger" style="display: none;">
+                You cannot prescribe more than {{ drug.quantity }} units of {{ drug.name }}.
+            </div>
+            
+            {% render_field form.patients class="form-control  mt-2" placeholder="Select patient" %}
+        </div>
+        <button type="submit" class="btn btn-primary" id="submit-button">Prescribe</button>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var quantityField = document.getElementById('quantity-field');
+            var errorMessage = document.getElementById('quantity-error');
+            var maxQuantity = {{ drug.quantity }}; // Ensure this is correctly passed from your view
+
+            quantityField.addEventListener('input', function() {
+                var enteredQuantity = parseInt(quantityField.value, 10);
+                if (enteredQuantity > maxQuantity) {
+                    errorMessage.style.display = 'block';
+                    quantityField.classList.add('is-invalid'); // Add Bootstrap class for invalid input
+                } else {
+                    errorMessage.style.display = 'none';
+                    quantityField.classList.remove('is-invalid'); // Remove Bootstrap class for valid input
+                }
+            });
+        });
+    </script>
+{% endblock %}
