@@ -97,33 +97,45 @@ from django.shortcuts import render
 from .models import Expense, PatientDischargeDetails, Medication
 
 def financial_report(request):
-    # Calculate total expenses
-    total_expenses = sum(expense.amount for expense in Expense.objects.all())
+    # Fetch expenses and sales data without applying any filter
+    all_expenses = Expense.objects.all()
+    all_medications = Medication.objects.all()
+    pdd = PatientDischargeDetails.objects.all()
+    # Calculate total expenses for all days
+    total_expenses_all = sum(expense.amount for expense in all_expenses)
     
-    # Calculate total income using iteration
-    total_income = sum(details.total for details in PatientDischargeDetails.objects.all())
+    # Calculate total income for all days
+    total_income_all = sum(details.total for details in pdd)
     
-    # Calculate profit
-    profit = total_income - total_expenses
+    # Calculate profit for all days
+    profit_all = total_income_all - total_expenses_all
     
-    # Fetch expenses and sales data
-    expenses = Expense.objects.all()
-    medications = Medication.objects.all()
-    
-    # Date filter
+    # Apply date filter if provided
     date_filter = request.GET.get('date_filter')
     if date_filter:
-        expenses = expenses.filter(date=date_filter)
-        medications = medications.filter(date_dispensed=date_filter)
+        expenses = all_expenses.filter(date=date_filter)
+        medications = all_medications.filter(date_dispensed=date_filter)
+        
+        # Recalculate total expenses and total income for the filtered date
+        total_expenses = sum(expense.amount for expense in expenses)
+        total_income = sum(details.total_price_after_margin for details in medications)
+        profit = total_income - total_expenses
+    else:
+        # If no date filter is applied, use the totals calculated for all days
+        total_expenses = total_expenses_all
+        total_income = total_income_all
+        profit = profit_all
     
     context = {
         'total_expenses': total_expenses,
         'total_income': total_income,
         'profit': profit,
-        'expenses': expenses,
-        'medications': medications,
+        'expenses': expenses if date_filter else all_expenses,
+        'medications': medications if date_filter else all_medications,
+        'date_filter': date_filter,
     }
     return render(request, 'hospital/financial_report.html', context)
+
 
 
 

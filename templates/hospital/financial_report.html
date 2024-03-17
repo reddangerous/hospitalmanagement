@@ -1,21 +1,71 @@
 {% extends 'hospital/admin_base.html' %}
 
+
 {% block content %}
-<div class="container">
-    <h2>Financial Report</h2>
-    <p>Total Expenses: {{ total_expenses }}</p>
-    <p>Total Income: {{ total_income }}</p>
-    <p>Profit: {{ profit }}</p>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var dateFilter = "{{ date_filter }}";
+            var titleElement = document.getElementById("financial-report-title");
+            if (dateFilter) {
+                titleElement.innerText = "Financial Report for " + dateFilter;
+            }
+        });
+    </script>
+</head>
+<div class="container mt-5">
+    <row>
+        <form method="get" class="float-right">
+            <div class="form-group">
+               
+                <div class="input-group">
+                    <label for="date_filter">Filter by Date:</label>
+                    <input type="date" id="date_filter" name="date_filter" class="form-control">
+                    <button type="submit" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Filter">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+        
+        <table class="table table-striped">
+            <h1 id="financial-report-title" class='text-center'>Financial reports</h1>
 
-    <!-- Date Filter Form -->
-    <form method="get" class="float-right">
-        <div class="form-group">
-            <label for="date_filter">Filter by Date:</label>
-            <input type="date" id="date_filter" name="date_filter" class="form-control">
-        </div>
-        <button type="submit" class="btn btn-primary">Filter</button>
-    </form>
+          
+        
+            <hr style="border-top: 3px solid #808080;">
+        
+            <thead>
+               <tr>
+                 <th>Category</th>
+                 <th>Amount</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                 <td>Total Expenses</td>
+                 <td>{{ total_expenses }}</td>
+               </tr>
+               <tr>
+                 <td>Total Income</td>
+                 <td>{{ total_income }}</td>
+               </tr>
+               <tr>
+                {% if profit < 0 %}
+                 <td style="color: red;">Loss</td>
+                 <td style="color: red;">{{ profit }}</td>
+                 {% else  %}
+                    <td style="color: green;"> Profit </td>
+                     <td style="color: green;">{{ profit }}</td>
+                 {% endif %}
+               </tr>
+            </tbody>
+        </table>
+        
 
+    </row>
+    <hr style="border-top: 3px solid #808080;">
     <div class="row">
         <div class="col-md-6">
             <h3>Expenses</h3>
