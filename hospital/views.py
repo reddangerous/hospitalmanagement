@@ -13,7 +13,6 @@ from .models import Drug, Expense, PatientDischargeDetails, medicalRecords, Pres
 from .forms import DrugForm, ExpenseForm, MedicalRecordForm, RecommendationForm, ReportCriteriaForm
 from tablib import Dataset
 from .models import Drug
-from weasyprint import HTML
 from .models import Medication
 from .forms import MedicationDispenseForm, PrescriptionManagementForm, PatientSelectionForm
 from django.http import JsonResponse
@@ -240,15 +239,22 @@ def search_drugs(request):
     drugs = Drug.objects.filter(name__icontains=query)
     return render(request, 'hospital/drug_search.html', {'query': query, 'drugs': drugs})
 
+
+def drug_render_to_pdf(template_src, context_dict):
+    template = get_template(template_src)
+    html  = template.render(context_dict)
+    result = io.BytesIO()
+    pdf = pisa.pisaDocument(io.BytesIO(html.encode("ISO-8859-1")), result)
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    return
+
+
 def download_pdf(request, drug_id):
     drug = get_object_or_404(Drug, id=drug_id)
     context = {'drug': drug}
-    html = render(request, 'hospital/pdf_report_template.html', context).content.decode('utf-8')
-    pdf = HTML(string=html).write_pdf()
+    return drug_render_to_pdf('hospital/pdf_report_template.html',context)
 
-    response = HttpResponse(pdf, content_type='application/pdf')
-    response['Content-Disposition'] = f'filename="{drug.name}_report.pdf"'
-    return response
 
 def download_excel(request, drug_id):
     drug = get_object_or_404(Drug, id=drug_id)
