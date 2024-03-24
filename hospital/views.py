@@ -138,7 +138,7 @@ def financial_report(request):
     end_date = request.GET.get('end_date')
 
     # Initialize report title
-    report_title = "Financial reports--- Income and Expenditure"
+    report_title = "Financial reports Income and Expenditure"
 
     # Apply date filter if both start and end dates are provided
     if start_date and end_date:
