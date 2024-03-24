@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from . import models
-from .models import Drug, medicalRecords, Patient, Prescription, Medication, Expense
+from .models import Department, Drug, medicalRecords, Patient, Prescription, Medication, Expense
 from django.contrib.auth.models import User
 # hospital/forms.py
 
@@ -9,10 +9,21 @@ from django import forms
 from .models import Prescription, Drug
 
 from .models import Recommendation
+
+class DepartmentForm(forms.ModelForm):
+    class Meta:
+        model = Department
+        fields = ['departments']
+
 class MedicalRecordForm(forms.ModelForm):
     class Meta:
         model = medicalRecords
         fields = ['medication_name', 'dosage', 'hospital_name', 'recommendation']
+
+    def __init__(self, *args, **kwargs):
+        super(MedicalRecordForm, self).__init__(*args, **kwargs)
+        self.fields['recommendation'].queryset = Recommendation.objects.values_list('doctor_recommendation', flat=True)
+
 class RecommendationForm(forms.ModelForm):
     class Meta:
         model = Recommendation
@@ -22,7 +33,10 @@ class RecommendationForm(forms.ModelForm):
 class ExpenseForm(forms.ModelForm):
     class Meta:
         model = Expense
-        fields = ['category', 'amount', 'description']
+        fields = ['category', 'amount', 'description', 'date']
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date'}),
+        }
 
 class MedicationDispenseForm(forms.ModelForm):
     prescription_quantity = forms.IntegerField(label='Prescription Quantity')

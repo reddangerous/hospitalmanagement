@@ -9,8 +9,8 @@ from django.contrib.auth.decorators import login_required,user_passes_test
 from datetime import datetime,timedelta,date, timezone
 from django.conf import settings
 from django.db.models import Q
-from .models import Drug, Expense, PatientDischargeDetails, medicalRecords, Prescription, Activity, Patient, Recommendation
-from .forms import DrugForm, ExpenseForm, MedicalRecordForm, RecommendationForm, ReportCriteriaForm
+from .models import Department, Drug, Expense, PatientDischargeDetails, medicalRecords, Prescription, Activity, Patient, Recommendation
+from .forms import DepartmentForm, DrugForm, ExpenseForm, MedicalRecordForm, RecommendationForm, ReportCriteriaForm
 from tablib import Dataset
 from .models import Drug
 from .models import Medication
@@ -19,6 +19,21 @@ from django.http import JsonResponse
 from django.db.models import Prefetch
 from django.db.models.functions import Concat
 from django.db.models import F, Value, CharField
+
+
+def add_department(request):
+    if request.method == 'POST':
+        form = DepartmentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('add_department')
+    else:
+        form = DepartmentForm()
+
+    # Fetch all departments
+    departments = Department.objects.all()
+
+    return render(request, 'hospital/add_departments.html', {'form': form, 'departments': departments})
 #recommendation
 def create_recommendation(request, patient_id):
     patient = Patient.objects.get(id=patient_id)
@@ -40,6 +55,9 @@ def add_medical_record(request, patient_id):
         if form.is_valid():
             medical_record = form.save(commit=False)
             medical_record.patient = patient
+            doctor_recommendation = form.cleaned_data.get('recommendation')
+            recommendation = Recommendation.objects.get(doctor_recommendation=doctor_recommendation)
+            medical_record.recommendation = recommendation
             medical_record.save()
             return redirect('view_medical_records', patient_id=patient.id)
     else:
@@ -48,10 +66,13 @@ def add_medical_record(request, patient_id):
 
 
 
+
 def view_medical_records(request, patient_id):
     patient = get_object_or_404(Patient, id=patient_id)
     medical_records = medicalRecords.objects.filter(patient=patient)
     return render(request, 'hospital/view_medical_records.html', {'medical_records': medical_records, 'patient': patient})
+
+
 def patient_view_medical_records(request, patient_id):
     patient = get_object_or_404(Patient, id=patient_id)
     medical_records = medicalRecords.objects.filter(patient=patient)
@@ -95,11 +116,14 @@ from django.utils import timezone
 from django.shortcuts import render
 from .models import Expense, PatientDischargeDetails, Medication
 
+from datetime import datetime
+
 def financial_report(request):
     # Fetch expenses and sales data without applying any filter
     all_expenses = Expense.objects.all()
     all_medications = Medication.objects.all()
     pdd = PatientDischargeDetails.objects.all()
+    
     # Calculate total expenses for all days
     total_expenses_all = sum(expense.amount for expense in all_expenses)
     
@@ -109,29 +133,50 @@ def financial_report(request):
     # Calculate profit for all days
     profit_all = total_income_all - total_expenses_all
     
-    # Apply date filter if provided
-    date_filter = request.GET.get('date_filter')
-    if date_filter:
-        expenses = all_expenses.filter(date=date_filter)
-        medications = all_medications.filter(date_dispensed=date_filter)
+    # Fetch start and end dates from the request
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
+    # Initialize report title
+    report_title = "Financial reports"
+
+    # Apply date filter if both start and end dates are provided
+    if start_date and end_date:
+        expenses = all_expenses.filter(date__range=[start_date, end_date])
+        medications = all_medications.filter(date_dispensed__range=[start_date, end_date])
         
         # Recalculate total expenses and total income for the filtered date
         total_expenses = sum(expense.amount for expense in expenses)
         total_income = sum(details.total_price_after_margin for details in medications)
         profit = total_income - total_expenses
+
+        # Calculate the difference in days between the start and end dates
+        date_diff = (datetime.strptime(end_date, "%Y-%m-%d") - datetime.strptime(start_date, "%Y-%m-%d")).days
+
+        # Set the report title based on the date difference
+        if date_diff <= 30:
+            report_title = f"{start_date} to {end_date} Monthly Report"
+        elif date_diff <= 120:
+            report_title = f"{start_date} to {end_date} Quarterly Report"
+        elif date_diff <= 180:
+            report_title = f"{start_date} to {end_date} Half-Yearly Report"
+        else:
+            report_title = f"{start_date} to {end_date} Yearly Report"
     else:
         # If no date filter is applied, use the totals calculated for all days
         total_expenses = total_expenses_all
         total_income = total_income_all
         profit = profit_all
+        expenses = all_expenses
+        medications = all_medications
     
     context = {
         'total_expenses': total_expenses,
         'total_income': total_income,
         'profit': profit,
-        'expenses': expenses if date_filter else all_expenses,
-        'medications': medications if date_filter else all_medications,
-        'date_filter': date_filter,
+        'expenses': expenses,
+        'medications': medications,
+        'report_title': report_title,
     }
     return render(request, 'hospital/financial_report.html', context)
 
@@ -398,6 +443,7 @@ def restock_drug(request, drug_id):
         quantity = request.POST['quantity']
         drug.quantity += int(quantity)
         drug.save()
+        return redirect('add_inventory')
     return render(request, 'hospital/restock.html', {'drug': drug})
 def drug_details(request, drug_id):
     drug = get_object_or_404(Drug, pk=drug_id)
@@ -405,7 +451,6 @@ def drug_details(request, drug_id):
 
 def edit_drug(request, drug_id):
     drug = get_object_or_404(Drug, pk=drug_id)
-
     if request.method == 'POST':
         form = DrugForm(request.POST, instance=drug)
         if form.is_valid():
@@ -415,6 +460,8 @@ def edit_drug(request, drug_id):
         form = DrugForm(instance=drug)
 
     return render(request, 'hospital/edit_drug.html', {'form': form, 'drug': drug})
+
+
 
 def delete_drug(request, drug_id):
     drug = get_object_or_404(Drug, pk=drug_id)

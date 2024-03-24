@@ -1,18 +1,23 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+# departments = [
+#         ('Cardiologist', 'Cardiologist'),
+#         ('Dermatologists', 'Dermatologists'),
+#         ('Emergency Medicine Specialists', 'Emergency Medicine Specialists'),
+#         ('Allergists/Immunologists', 'Allergists/Immunologists'),
+#         ('Anesthesiologists', 'Anesthesiologists'),
+#         ('Colon and Rectal Surgeons', 'Colon and Rectal Surgeons'),
+#     ]
 
 
-departments=[('Cardiologist','Cardiologist'),
-('Dermatologists','Dermatologists'),
-('Emergency Medicine Specialists','Emergency Medicine Specialists'),
-('Allergists/Immunologists','Allergists/Immunologists'),
-('Anesthesiologists','Anesthesiologists'),
-('Colon and Rectal Surgeons','Colon and Rectal Surgeons')
-]
-
-
+class Department(models.Model):
+    departments = models.CharField(max_length=100)
+    def __str__(self):
+        return self.departments
 #Finance Department
+department = Department.objects.all()
+departments = [(dept.departments, dept.departments) for dept in department]
 
 
 class Expense(models.Model):
@@ -27,7 +32,7 @@ class Expense(models.Model):
 
     category = models.CharField(max_length=20, choices=EXPENSE_CATEGORIES)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField()
     description = models.TextField(blank=True)
 
     def __str__(self):

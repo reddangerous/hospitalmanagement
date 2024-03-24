@@ -1,41 +1,43 @@
 {% extends 'hospital/admin_base.html' %}
 
-
 {% block content %}
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var dateFilter = "{{ date_filter }}";
+            var reportTitle = "{{ report_title }}";
             var titleElement = document.getElementById("financial-report-title");
-            if (dateFilter) {
-                titleElement.innerText = "Financial Report for " + dateFilter;
+            if (reportTitle) {
+                titleElement.innerText = reportTitle;
             }
         });
     </script>
 </head>
 <div class="container mt-5">
     <row>
-        <form method="get" class="float-right">
-            <div class="form-group">
-               
-                <div class="input-group">
-                    <label for="date_filter">Filter by Date:</label>
-                    <input type="date" id="date_filter" name="date_filter" class="form-control">
-                    <button type="submit" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Filter">
+        <form method="get" class="mt-3">
+            <div class="form-group row">
+                <label for="start_date" class="col-sm-2 col-form-label">Start Date:</label>
+                <div class="col-sm-3">
+                    <input type="date" id="start_date" name="start_date" class="form-control">
+                </div>
+                <label for="end_date" class="col-sm-2 col-form-label">End Date:</label>
+                <div class="col-sm-3">
+                    <input type="date" id="end_date" name="end_date" class="form-control">
+                </div>
+                <div class="col-sm-2">
+                    <button type="submit" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Filter reports">
                         <i class="fas fa-filter"></i>
                     </button>
                 </div>
             </div>
         </form>
         
+        
+        
         <table class="table table-striped">
             <h1 id="financial-report-title" class='text-center'>Financial reports</h1>
-
-          
-        
             <hr style="border-top: 3px solid #808080;">
-        
             <thead>
                <tr>
                  <th>Category</th>
@@ -62,8 +64,6 @@
                </tr>
             </tbody>
         </table>
-        
-
     </row>
     <hr style="border-top: 3px solid #808080;">
     <div class="row">
