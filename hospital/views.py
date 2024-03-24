@@ -155,13 +155,13 @@ def financial_report(request):
 
         # Set the report title based on the date difference
         if date_diff <= 30:
-            report_title = f"{start_date} to {end_date} Monthly Report"
+            report_title = f"{start_date} to {end_date} Monthly Report Income and Expenditure"
         elif date_diff <= 120:
-            report_title = f"{start_date} to {end_date} Quarterly Report"
+            report_title = f"{start_date} to {end_date} Quarterly Report Income and Expenditure"
         elif date_diff <= 180:
-            report_title = f"{start_date} to {end_date} Half-Yearly Report"
+            report_title = f"{start_date} to {end_date} Half-Yearly Report Income and Expenditure"
         else:
-            report_title = f"{start_date} to {end_date} Yearly Report"
+            report_title = f"{start_date} to {end_date} Yearly Report Income and Expenditure"
     else:
         # If no date filter is applied, use the totals calculated for all days
         total_expenses = total_expenses_all
