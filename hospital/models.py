@@ -1,14 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# departments = [
-#         ('Cardiologist', 'Cardiologist'),
-#         ('Dermatologists', 'Dermatologists'),
-#         ('Emergency Medicine Specialists', 'Emergency Medicine Specialists'),
-#         ('Allergists/Immunologists', 'Allergists/Immunologists'),
-#         ('Anesthesiologists', 'Anesthesiologists'),
-#         ('Colon and Rectal Surgeons', 'Colon and Rectal Surgeons'),
-#     ]
+departments = [
+        ('Cardiologist', 'Cardiologist'),
+        ('Dermatologists', 'Dermatologists'),
+        ('Emergency Medicine Specialists', 'Emergency Medicine Specialists'),
+        ('Allergists/Immunologists', 'Allergists/Immunologists'),
+        ('Anesthesiologists', 'Anesthesiologists'),
+        ('Colon and Rectal Surgeons', 'Colon and Rectal Surgeons'),
+    ]
 
 
 class Department(models.Model):

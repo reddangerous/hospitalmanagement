@@ -124,6 +124,10 @@ class DoctorForm(forms.ModelForm):
     class Meta:
         model=models.Doctor
         fields=['address','mobile','department','status','profile_pic']
+    def __init__(self, *args, **kwargs):
+        super(DoctorForm, self).__init__(*args, **kwargs)
+        # Dynamically populate the department choices
+        self.fields['department'].choices = [(dept.departments, dept.departments) for dept in Department.objects.all()]
 
 
 
