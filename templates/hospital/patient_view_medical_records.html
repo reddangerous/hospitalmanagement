@@ -14,28 +14,21 @@
             </tr>
         </thead>
         <tbody>
-            
+            {% for record in medical_records %}
             <tr>
-                {% for record in medical_records %}
                 <td>{{ record.medication_name }}</td>
                 <td>{{ record.dosage }}</td>
                 <td>{{ record.date_created }}</td>
                 <td>{{ record.hospital_name }}</td>
                 <td> {{ record.recommendation.doctor_recommendation }} </td>
-                {% empty %}
-                <td colspan="5">No medical records found.</td>
-                {% endfor %}
-                {% comment %} <td> {{ recommendation.doctor_recommendation }} </td> {% endcomment %}
-
-
             </tr>
-            
-            
-           
+            {% empty %}
+            <tr>
+                <td colspan="5">No medical records found.</td>
+            </tr>
+            {% endfor %}
+            {% comment %} <td> {{ recommendation.doctor_recommendation }} </td> {% endcomment %}
         </tbody>
     </table>
-   
 </div>
 {% endblock %}
-
-

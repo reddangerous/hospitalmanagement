@@ -1287,6 +1287,7 @@ def patient_book_appointment_view(request):
             message = appointmentForm.cleaned_data.get('description') # set the message to the value of the form
             patient.status = False # change patient.status to false
             patient.symptoms = message # set the symptoms to the message
+            patient.save()
         return HttpResponseRedirect('patient-view-appointment')
     return render(request,'hospital/patient_book_appointment.html',context=mydict)
 
