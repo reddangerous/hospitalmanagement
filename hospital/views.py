@@ -408,6 +408,12 @@ def prescribe_drug(request, drug_id):
             quantity = form.cleaned_data['quantity']
             patient = form.cleaned_data['patients']
             
+            # Check if patient's status is True
+            if patient.status == True:
+                # Delete existing prescription
+                Prescription.objects.filter(patient=patient).delete()
+            
+            # Create new prescription
             Prescription.objects.create(drug=drug, quantity=quantity, patient=patient)
             drug.quantity -= int(quantity)
             drug.save()
@@ -416,6 +422,7 @@ def prescribe_drug(request, drug_id):
         form = PrescribeForm()
 
     return render(request, 'hospital/prescribe.html', {'drug': drug, 'form': form})
+
 def doctor_prescribe_drug(request, drug_id):
     drug = get_object_or_404(Drug, pk=drug_id)
     
@@ -424,7 +431,11 @@ def doctor_prescribe_drug(request, drug_id):
         if form.is_valid():
             quantity = form.cleaned_data['quantity']
             patient = form.cleaned_data['patients']
-            
+            # Check if patient's status is True
+            if patient.status == True:
+                # Delete existing prescription
+                Prescription.objects.filter(patient=patient).delete()
+                
             Prescription.objects.create(drug=drug, quantity=quantity, patient=patient)
             drug.quantity -= int(quantity)
             drug.save()
@@ -1273,6 +1284,9 @@ def patient_book_appointment_view(request):
             appointment.patientName=request.user.first_name #----user can choose any patient but only their info will be stored
             appointment.status=False
             appointment.save()
+            message = appointmentForm.cleaned_data.get('description') # set the message to the value of the form
+            patient.status = False # change patient.status to false
+            patient.symptoms = message # set the symptoms to the message
         return HttpResponseRedirect('patient-view-appointment')
     return render(request,'hospital/patient_book_appointment.html',context=mydict)
 
