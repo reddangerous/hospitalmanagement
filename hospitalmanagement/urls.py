@@ -150,7 +150,7 @@ urlpatterns += [
     path('financial-reports/', views.financial_report, name='financial_reports'),
     path('add_medical_record/<int:patient_id>/', views.add_medical_record, name='add_medical_record'),
     path('view_medical_records/<int:patient_id>/', views.view_medical_records, name='view_medical_records'),
-    path('patient_view_medical_records/<int:patient_id>/', views.patient_view_medical_records, name='view_medical_records'),
+    path('patient_view_medical_records/<int:patient_id>/', views.patient_view_medical_records, name='patient_view_medical_records'),
 ]
 #Developed By : sumit kumar
 #facebook : fb.com/sumit.luv

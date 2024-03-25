@@ -19,11 +19,8 @@ class MedicalRecordForm(forms.ModelForm):
     class Meta:
         model = medicalRecords
         fields = ['medication_name', 'dosage', 'hospital_name', 'recommendation']
-
-    def __init__(self, *args, **kwargs):
-        super(MedicalRecordForm, self).__init__(*args, **kwargs)
-        self.fields['recommendation'].queryset = Recommendation.objects.values_list('doctor_recommendation', flat=True)
-
+    
+        
 class RecommendationForm(forms.ModelForm):
     class Meta:
         model = Recommendation

@@ -55,9 +55,6 @@ def add_medical_record(request, patient_id):
         if form.is_valid():
             medical_record = form.save(commit=False)
             medical_record.patient = patient
-            doctor_recommendation = form.cleaned_data.get('recommendation')
-            recommendation = Recommendation.objects.get(doctor_recommendation=doctor_recommendation)
-            medical_record.recommendation = recommendation
             medical_record.save()
             return redirect('view_medical_records', patient_id=patient.id)
     else:
