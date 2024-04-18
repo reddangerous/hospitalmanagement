@@ -117,6 +117,29 @@ class DoctorUserForm(forms.ModelForm):
         widgets = {
         'password': forms.PasswordInput()
         }
+
+class AdmissionRepUserForm(forms.ModelForm):
+    class Meta:
+        model=User
+        fields=['first_name','last_name','username','password']
+        widgets = {
+        'password': forms.PasswordInput()
+        }
+class PharmacistUserForm(forms.ModelForm):
+    class Meta:
+        model=User
+        fields=['first_name','last_name','username','password']
+        widgets = {
+        'password': forms.PasswordInput()
+        }
+class FinanceRepUserForm(forms.ModelForm):
+    class Meta:
+        model=User
+        fields=['first_name','last_name','username','password']
+        widgets = {
+        'password': forms.PasswordInput()
+        }
+
 class DoctorForm(forms.ModelForm):
     class Meta:
         model=models.Doctor
@@ -126,7 +149,20 @@ class DoctorForm(forms.ModelForm):
         # Dynamically populate the department choices
         self.fields['department'].choices = [(dept.departments, dept.departments) for dept in Department.objects.all()]
 
+class AdmissionRepForm(forms.ModelForm):
+    class Meta:
+        model=models.AdmissionRep
+        fields=['address','mobile']
+        
+class PharmacistForm(forms.ModelForm):
+    class Meta:
+        model=models.Pharmacist
+        fields=['address','mobile']
 
+class FinanceRepForm(forms.ModelForm):
+    class Meta:
+        model=models.FinanceRep
+        fields=['address','mobile']
 
 #for teacher related form
 class PatientUserForm(forms.ModelForm):

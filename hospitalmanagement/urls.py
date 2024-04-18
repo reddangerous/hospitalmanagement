@@ -34,10 +34,16 @@ urlpatterns = [
     path('adminsignup', views.admin_signup_view),
     path('doctorsignup', views.doctor_signup_view,name='doctorsignup'),
     path('patientsignup', views.patient_signup_view),
+    path('admissionrepsignup', views.admissionrep_signup_view, name='admissionrepsignup'),
+    path('pharmacistsignup', views.pharmacist_signup_view, name='pharmasistsignup'),
+    path('financerepsignup', views.financerep_signup_view, name='financerepsignup'),
     
     path('adminlogin', LoginView.as_view(template_name='hospital/adminlogin.html')),
     path('doctorlogin', LoginView.as_view(template_name='hospital/doctorlogin.html')),
     path('patientlogin', LoginView.as_view(template_name='hospital/patientlogin.html')),
+    path('admissionreplogin', LoginView.as_view(template_name='hospital/admissionreplogin.html')),
+    path('pharmacistlogin', LoginView.as_view(template_name='hospital/pharmacistlogin.html')),
+    path('financereplogin', LoginView.as_view(template_name='hospital/financereplogin.html')),
 
 
     path('afterlogin', views.afterlogin_view,name='afterlogin'),
@@ -45,6 +51,9 @@ urlpatterns = [
 
 
     path('admin-dashboard', views.admin_dashboard_view,name='admin-dashboard'),
+    path('admissionrep-dashboard', views.admissionrep_dashboard_view,name='admissionrep-dashboard'),
+    path('pharmacist-dashboard', views.pharmacy_view,name='pharmacist-dashboard'),
+    path('financerep-dashboard', views.financial_management_dashboard,name='financerep-dashboard'),
 
     path('admin-doctor', views.admin_doctor_view,name='admin-doctor'),
     path('admin-view-doctor', views.admin_view_doctor_view,name='admin-view-doctor'),
@@ -78,6 +87,39 @@ urlpatterns = [
     path('reject-appointment/<int:pk>', views.reject_appointment_view,name='reject-appointment'),
 ]
 
+#Admission rep urls
+urlpatterns +=[
+    path('admission-doctor', views.admission_doctor_view,name='admin-doctor'),
+    path('admission-view-doctor', views.admission_view_doctor_view,name='admission-view-doctor'),
+    path('delete-doctor-from-hospital/<int:pk>', views.delete_doctor_from_hospital_view,name='delete-doctor-from-hospital'),
+    path('update-doctor/<int:pk>', views.update_doctor_view,name='update-doctor'),
+    path('admission-add-doctor', views.admission_add_doctor_view,name='admission-add-doctor'),
+    path('admission-approve-doctor', views.admission_approve_doctor_view,name='admission-approve-doctor'),
+    path('approve-doctor/<int:pk>', views.approve_doctor_view,name='approve-doctor'),
+    path('reject-doctor/<int:pk>', views.reject_doctor_view,name='reject-doctor'),
+    path('admission-view-doctor-specialisation',views.admission_view_doctor_specialisation_view,name='admission-view-doctor-specialisation'),
+
+
+    path('admission-patient', views.admission_patient_view,name='admission-patient'),
+    path('admission-view-patient', views.admission_view_patient_view,name='admission-view-patient'),
+    path('delete-patient-from-hospital/<int:pk>', views.delete_patient_from_hospital_view,name='delete-patient-from-hospital'),
+    path('update-patient/<int:pk>', views.update_patient_view,name='update-patient'),
+    path('admission-add-patient', views.admission_add_patient_view,name='admission-add-patient'),
+    path('admission-approve-patient', views.admission_approve_patient_view,name='admission-approve-patient'),
+    path('approve-patient/<int:pk>', views.approve_patient_view,name='approve-patient'),
+    path('reject-patient/<int:pk>', views.reject_patient_view,name='reject-patient'),
+    path('admission-discharge-patient', views.admission_discharge_patient_view,name='admission-discharge-patient'),
+    path('discharge-patient/<int:pk>', views.discharge_patient_view,name='discharge-patient'),
+    path('download-pdf/<int:pk>', views.download_pdf_view,name='download-pdf'),
+
+    path('add_department/', views.add_department, name='add_department'),
+    path('admission-appointment', views.admission_appointment_view,name='admission-appointment'),
+    path('admission-view-appointment', views.admission_view_appointment_view,name='admission-view-appointment'),
+    path('admission-add-appointment', views.admission_add_appointment_view,name='admission-add-appointment'),
+    path('admission-approve-appointment', views.admission_approve_appointment_view,name='admission-approve-appointment'),
+    path('approve-appointment/<int:pk>', views.approve_appointment_view,name='approve-appointment'),
+    path('reject-appointment/<int:pk>', views.reject_appointment_view,name='reject-appointment'),
+]
 
 #---------FOR DOCTOR RELATED URLS-------------------------------------
 urlpatterns +=[

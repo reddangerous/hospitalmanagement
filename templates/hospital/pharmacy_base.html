@@ -12,7 +12,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-
+  <link rel="stylesheet" href="{% static '/style.css' %}">
 
 
   <style media="screen">
@@ -86,6 +86,8 @@
       text-align: center;
 
     }
+
+
 
 
 
@@ -278,36 +280,42 @@
   
 
   </style>
+
 </head>
 
-<body>
+<body  >
+
   <!-- partial:index.partial.html -->
-  <nav class="menu" tabindex="0">
+  <nav  class="menu" tabindex="0">
     <div class="smartphone-menu-trigger mt-5"></div>
     <header class="avatar">
-      <img src="{% static patient.profile_pic.url %}" alt="Profile Pic" />
+      <img src="{% static "images/adminpropic.png" %}" />
       <br><br>
-      <h6>Patient</h6>
+      <h6>Pharmacist</h6>
       <h2>{{request.user.first_name}}</h2>
     </header>
     <ul>
-      <li tabindex="0" class="icon-dashboard"> <a style="color:white; text-decoration:none;" href="/patient-dashboard"><span>Dashboard</span></a> </li>
-      <li tabindex="0" class="icon-calendar"> <a style="color:white; text-decoration:none;" href="/patient-appointment"><span>Appointments</span></a></li>
-      <li tabindex="0" class="icon-users"> <a style="color:white; text-decoration:none;" href="/patient-view-doctor"><span>Doctors</span></a></li>
-      
-      <li tabindex="0" class="icon-users"> <a style="color:white; text-decoration:none;" href="/patient-discharge"><span>Discharge</span></a></li>
-      <li tabindex="0" class="icon-users"> <a style="color:white; text-decoration:none;" href="/patient_view_medical_records/{{patient.id}}"><span>Medical Records</span></a></li>
-      <li tabindex="0" class="icon-users"> <a style="color:white; text-decoration:none;" href="/patient_view_recommendations/{{patient.id}}"><span>My Recommendations</span></a></li>
+      <li tabindex="0" class="icon-dashboard"> <a style="color:white; text-decoration:none;" href="/dispensed-medications"><span>Dispensed Medication</span></a> </li>
+      <li tabindex="0" class="icon-customers"> <a style="color:white; text-decoration:none;" href="/pharmacy-dashboard"><span>Dashboard</span></a></li>
+      <li tabindex="0" class="icon-users"> <a style="color:white; text-decoration:none;" href="/select-patient"><span>Dispense Medication</span></a></li>
+     
+    </li>
+
+
+    
     </ul>
   </nav>
+
   <main>
+
+
     <!-- nav start -->
     <div class="bs-example">
       <nav class="navbar navbar-expand-md  navbar-dark fixed-top" style="background:#337AB7;">
-        <a href="/patient-dashboard" class="navbar-brand">Haliflax hospital Management System</a>
+        <a href="/pharmacy-dashboard" class="navbar-brand">Haliflax hospital Management System</a>
         <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
           <span class="navbar-toggler-icon"></span>
-        </button>
+        </button >
         <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
           <div class="navbar-nav" style=" margin-left: 90%;">
 
@@ -321,11 +329,20 @@
       </nav>
     </div>
     <!-- nav end -->
+
+
+
     <br><br>
+
     <!-- content start-->
     {% block content %}
+
     {% endblock content %}
+    <!-- content end-->
+
+    <br><br><br><br>
    
+
   </main>
   <!--
   developed By : sumit kumar
